@@ -10,9 +10,9 @@ var arrChild=[];
 app.get('/start', function (req, res) {
   
   //res.json({status:200,message:"Pengiriman pesan sedang di proses"});
-  var command ='C://xampp2/htdocs/sbd/parser/parser_'+req.query.id+'.py' ;
+  var command ='C://xampp/htdocs/sbdoj/parser/parser.py' ;
   var child =require('child_process').spawn('python',[command]);
-  console.log("start parser_"+req.query.id)
+  console.log("start parser");
   /*child = exec(command, 
 	function (error, stdout, stderr) {      
 	    console.log('stdout: ' + stdout);
@@ -22,11 +22,12 @@ app.get('/start', function (req, res) {
 	    }
   });*/
 var objChild={};
+var num = 1
 objChild.child=child;
-objChild.id=req.query.id;
+objChild.id=num;
 arrChild.push(objChild); 
 res.statusCode = 302; 
-res.setHeader("Location", "http://10.151.34.15/sbd/public/admin/event");
+res.setHeader("Location", "http://localhost/sbdoj/public/events");
 res.end();
 
 });
@@ -36,14 +37,14 @@ app.get('/stop', function (req, res) {
   //res.json({status:200,message:"Pengiriman pesan sedang di proses"});
   for(i=0;i<arrChild.length;i++)
   {
-	  if(arrChild[i].id==req.query.id){
+	  if(arrChild[i].id==1){
 		  arrChild[i].child.kill('SIGINT');
-		  console.log("kill parser_"+req.query.id)
+		  console.log("kill parser");
 	  }
   }
 
 res.statusCode = 302; 
-res.setHeader("Location", "http://10.151.34.15/sbd/public/admin/event");
+res.setHeader("Location", "http://localhost/sbdoj/public/events");
 res.end();
 });
 var server = app.listen(3000, function () {

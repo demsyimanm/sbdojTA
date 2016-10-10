@@ -92,7 +92,7 @@ $(document).ready(function() {
  <div class="ui container">
     <div class="header item">
 
-      <img class ="logo" src="{{URL::to('assets/image/alpro2.png')}}" style="50%"> <a href="{{url('/')}}">ALPRO</a>
+      <img class ="logo" src="{{URL::to('assets/image/horizontal.png')}}" style="50%"> <a href="{{url('/')}}"></a>
     </div>
     <!-- <a class="item" href="{{url('/')}}">Dashboard</a> -->
     <a class="item" href="{{url('accounts')}}">Account</a>

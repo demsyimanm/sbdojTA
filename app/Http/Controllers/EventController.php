@@ -15,52 +15,40 @@ use App\User;
 use App\Event;
 use App\Submission;
 use App\Question;
+use DateTime;
 
 class EventController extends Controller {
-
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
-	public function index()
-	{
+	public function index() {
 		if(Auth::user()->role->id == 1){
 			$this->data['event'] = Event::get();
 			return view('admin.event.manage',$this->data);
 		}
-
-		else if (Auth::user()->role->id == 2 )
-		{
+		else if (Auth::user()->role->id == 2 ) {
 			$this->data['event'] = Event::where('kelas','=',Auth::user()->kelas)->get();
 			return view('admin.event.manage',$this->data);
 		}
 		elseif (Auth::user()->role->id == 3) {
 			$this->data['event'] = Event::where('kelas','=',Auth::user()->kelas)->get();
-			return view('user.event.manage',$this->data);		}
+			return view('user.event.manage',$this->data);		
+		}
 	}
 
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		if(Auth::user()->role->id == 1 || Auth::user()->role->id == 2){
+	public function create() {
+		if(Auth::user()->role->id == 1 || Auth::user()->role->id == 2) { 
 			$this->data['user'] = Auth::user()->role->id;
 			$this->data['kelas'] = Auth::user()->kelas;
 			if (Request::isMethod('get')) {
 				return View::make('admin.event.create',$this->data);
 			} 
-
 			else if (Request::isMethod('post')) {
 				$data = Input::all();
-				$max_id = Event::max('id');
-				$max_id += 1;
-				$data['waktu_mulai'] = $data['tgl_mulai']." ".$data['wkt_mulai'];
-				$data['waktu_akhir'] = $data['tgl_akhir']." ".$data['wkt_akhir'];
-				Event::insertGetId(array(
+				/*$max_id = Event::max('id');
+				$max_id += 1;*/
+				$temp_tgl_mulai = DateTime::createFromFormat('d/m/Y', $data['tgl_akhir'])->format('Y-m-d');
+				$temp_tgl_akhir = DateTime::createFromFormat('d/m/Y', $data['tgl_mulai'])->format('Y-m-d');
+				$data['waktu_mulai'] = $temp_tgl_mulai." ".$data['wkt_mulai'];
+				$data['waktu_akhir'] = $temp_tgl_akhir." ".$data['wkt_akhir'];
+				$ev_id = Event::insertGetId(array(
 					'judul' => $data['judul'], 
 					'konten' => $data['konten'], 
 					'waktu_mulai' => $data['waktu_mulai'], 
@@ -71,8 +59,8 @@ class EventController extends Controller {
 					'db_password' => $data['conn_password'],
 					'db_name' => $data['db_name']
 				));
-				$temp_file = "parser_".$max_id.".py";
-				$file = fopen("../parser/parser_".$max_id.".py", "wb") or die("Unable to open file!");
+				/*$temp_file = "parser_".$ev_id.".py";
+				$file = fopen("../parser/parser_".$ev_id.".py", "wb") or die("Unable to open file!");
 				$content = "#!/usr/bin/python
 import MySQLdb
 import time
@@ -179,8 +167,8 @@ except:
   print 'berhenti'
   execfile(".$temp_file.")";
 				fwrite($file, $content);
-				fclose($file);
-				return redirect('admin/event');
+				fclose($file);*/
+				return redirect('events');
 			}
 		} 
 		else {
@@ -188,96 +176,59 @@ except:
 		}
 	}
 
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function parserStart($id)
-	{
+	public function parserStart($id){
 		Event::where('id', $id)->update(array(
 			'status' => '1'
 		));
-		//http_get("http://localhost:3000/start?id=".$id);
-		return redirect("http://10.151.34.15:3000/start?id=".$id);
+		return redirect("http://localhost:3000/start?id=".$id);
 	}
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function ParserStop($id)
-	{
+	public function ParserStop($id) {
 		Event::where('id', $id)->update(array(
 			'status' => '0'
 		));
-		return redirect("http://10.151.34.15:3000/stop?id=".$id);
+		return redirect("http://localhost:3000/stop?id=".$id);
 	}
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
-	public function viewSubmissions()
-	{
-		if (Auth::user()->role->id == 1)
-		{
+	public function viewSubmissions() {
+		if (Auth::user()->role->id == 1) {
 			if (Request::isMethod('get')) {
-				# code...
 				$this->data['event'] = Event::get();
-				return view('admin.event.indexViewSubmission',$this->data);
-			} else {
+				return view('admin.event.indexSubmission',$this->data);
+			} 
+			else {
 				$id = Input::get('event');
-				return redirect('admin/event/viewSubmissionSubmit/'.$id);
+				return redirect('submissions/'.$id);
 			}
 		}
 
-		else
-		{
+		else {
 			if (Request::isMethod('get')) {
-				# code...
 				$kelas = Auth::user()->kelas;
 				$this->data['event'] = Event::where('kelas','=',$kelas)->get();
-				return view('admin.event.indexViewSubmission',$this->data);
-			} else {
+				return view('admin.event.indexSubmission',$this->data);
+			} 
+			else {
 				$id = Input::get('event');
-				return redirect('admin/event/viewSubmissionSubmit/'.$id);
+				return redirect('submissions/'.$id);
 			}
 		}
 	}
 
-	public function viewSubmissionsSubmit($id)
-	{
-		//echo "asadd".$id;
+	public function viewSubmissionsSubmit($id) {
 		$event = Event::find($id);
 		$quest_id = Question::select('id')->where('event_id',$id)->get();
 		$pertanyaan = array();
 		foreach ($quest_id as $key => $value) {
 			array_push($pertanyaan, $value->id);
 		}
-		//dd($pertanyaan);
 		$submissions = Submission::whereIn('question_id', $pertanyaan)->get();
-		//dd($submissions);
 		return view('admin.event.viewSubmission', compact('submissions', 'event'));
 
 	}
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		if(Auth::user()->role->id == 1 ){
+
+	public function update($id) {
+		if(Auth::user()->role->id == 1 ) {
 			$this->data = array();
 			$this->data['user'] = Auth::user()->role->id;
 			$this->data['kelas'] = "";
@@ -287,8 +238,10 @@ except:
 			} 
 			else if (Request::isMethod('post')) {
 				$data = Input::all();
-				$data['waktu_mulai'] = $data['tgl_mulai']." ".$data['wkt_mulai'];
-				$data['waktu_akhir'] = $data['tgl_akhir']." ".$data['wkt_akhir'];
+				$temp_tgl_mulai = DateTime::createFromFormat('d/m/Y', $data['tgl_mulai'])->format('Y-m-d');
+				$temp_tgl_akhir = DateTime::createFromFormat('d/m/Y', $data['tgl_akhir'])->format('Y-m-d');
+				$data['waktu_mulai'] = $temp_tgl_mulai." ".$data['wkt_mulai'];
+				$data['waktu_akhir'] = $temp_tgl_akhir." ".$data['wkt_akhir'];
 				Event::where('id', $id)->update(array(
 					'judul' => $data['judul'], 
 					'konten' => $data['konten'], 
@@ -300,34 +253,35 @@ except:
 					'db_password' => $data['conn_password'],
 					'db_name' => $data['db_name']
 				));
-				return redirect('admin/event');
+				return redirect('events');
 			}
 		} 
-	
-		else if(Auth::user()->role->id == 2){
+		else if(Auth::user()->role->id == 2) {
 			$this->data = array();
-			$this->data['kelas'] = Auth::user()->kelas;
-			$this->data['user'] = Auth::user()->role->id;
-			$this->data['eve'] = Event::find($id);
+			$kelas = Auth::user()->kelas;
+			$user = Auth::user()->role->id;
+			$even = Event::find($id);
 			if (Request::isMethod('get')) {
-				return View::make('admin.event.update', $this->data);
+				return View::make('admin.event.update', compact('kelas','user','even'));
 			} 
 			else if (Request::isMethod('post')) {
 				$data = Input::all();
-				$data['waktu_mulai'] = $data['tgl_mulai']." ".$data['wkt_mulai'];
-				$data['waktu_akhir'] = $data['tgl_akhir']." ".$data['wkt_akhir'];
+				$temp_tgl_mulai = DateTime::createFromFormat('d-m-Y', $data['tgl_mulai'])->format('Y-m-d');
+				$temp_tgl_akhir = DateTime::createFromFormat('d-m-Y', $data['tgl_akhir'])->format('Y-m-d');
+				$data['waktu_mulai'] = $temp_tgl_mulai." ".$data['wkt_mulai'];
+				$data['waktu_akhir'] = $temp_tgl_akhir." ".$data['wkt_akhir'];
 				Event::where('id', $id)->update(array(
 					'judul' => $data['judul'], 
 					'konten' => $data['konten'], 
 					'waktu_mulai' => $data['waktu_mulai'], 
 					'waktu_akhir' => $data['waktu_akhir'],
-					'kelas' => $this->data['kelas'],
+					'kelas' => $data['kelas'],
 					'ip' => $data['ip'],
 					'db_username' => $data['conn_username'],
 					'db_password' => $data['conn_password'],
 					'db_name' => $data['db_name']
 				));
-				return redirect('admin/event');
+				return redirect('events');
 			}
 		} 
 		else {
@@ -335,26 +289,20 @@ except:
 		}
 	}
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
 	public function destroy($id)
 	{
 		if(Auth::user()->role->id == 1 || Auth::user()->role->id == 2){
-			if (Request::isMethod('get')) {
-				$this->data = array();
-				$this->data['eve'] = Event::find($id);
-				return View::make('admin.event.delete', $this->data);
-			} 
-			else if (Request::isMethod('post')) {
-				$data = Input::all();
 				Event::where('id', $id)->delete();
-				return redirect('admin/event');
-			}
-		} else {
+				/*$quest_id = Question::select('id')->where('event_id',$id)->get();
+				$pertanyaan = array();
+				foreach ($quest_id as $key => $value) {
+					array_push($pertanyaan, $value->id);
+				}
+				Submission::whereIn('question_id', $pertanyaan)->delete();*/
+				Question::where('event_id',$id)->delete();
+				return redirect('events');
+		} 
+		else {
 			return redirect('/');
 		}
 	}

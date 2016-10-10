@@ -95,10 +95,13 @@
   <link rel="stylesheet" type="text/css" href="{{URL::to('assets/Semantic/components/dropdown.css')}}">
   <link rel="stylesheet" type="text/css" href="{{URL::to('assets/Semantic/components/transition.css')}}">
   <link rel="stylesheet" type="text/css" href="{{URL::to('assets/Semantic/components/popup.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{URL::to('assets/Semantic/components/tab.css')}}">
   <link rel="stylesheet" type="text/css" href="{{URL::to('assets/Semantic/components/modal.css')}}">
   <link rel="stylesheet" type="text/css" href="{{URL::to('assets/plugin/datepicker/dist/ng-flat-datepicker.css')}}">
   <link rel="stylesheet" type="text/css" href="{{URL::to('assets/plugin/datatables/dataTables.bootstrap.css')}}">
   <link rel="stylesheet" type="text/css" href="{{URL::to('assets/plugin/timepicker/DateTimePicker.css')}}">
+  <link rel="stylesheet" href="{{ URL::to('assets/AdminLTE/plugins/datepicker/datepicker3.css')}}">
+  <link rel="stylesheet" href="{{ URL::to('assets/AdminLTE/plugins/timepicker/bootstrap-timepicker.min.css')}}">
 
   
   </head>

@@ -88,7 +88,7 @@
                         <option <?php if ($user->kelas == 'D') echo "selected";?>  value="D">D</option>
                         <option <?php if ($user->kelas == 'E') echo "selected";?>  value="E">E</option>
                       </select>
-                    @elseif ($user->role_id == 2 )
+                    @elseif ($user->role_id == 2 or $user->role_id == 3)
                       <input type="text" class="" value="{{$user->kelas}}" readonly="" name="kelas">
                     @endif
                   </div>

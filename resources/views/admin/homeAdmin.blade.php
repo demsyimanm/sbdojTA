@@ -4,12 +4,12 @@
 <div class="ui center aligned text container" style="margin-bottom:0%">
   <div>
   	<center>
-  		<img src="{{URL::to('assets/image/alpro2.png')}}" style="width:60%">
+  		<img src="{{URL::to('assets/image/horizontal.png')}}" style="width:100%; margin-top:15%">
   	</center>
   	<h1 class="ui dividing header">
   	<div class="content">
   		<h3>Selamat Datang di Website</h3>
-    	Reservasi Laboratorium Algoritma dan Pemrograman
+    	Sistem Basis Data Online Judge
   	</div>
   </h1>
   </div>

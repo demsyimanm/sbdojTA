@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<link rel="icon" type="image/png" href="{{URL::to('assets/image/alpro2.png')}}">
+<link rel="icon" type="image/png" href="{{URL::to('assets/image/icon.png')}}">
 @include('header')
 @include('footer')	
 @include('admin.navAdmin')

@@ -1,4 +1,5 @@
-<?php namespace App\Http\Controllers;
+<?php 
+namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Request;
 use Auth;
@@ -9,15 +10,8 @@ use App\Question;
 use App\Submission;
 
 class UserController extends Controller {
-
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
-	public function index()
-	{
-		date_default_timezone_set('Asia/Jakarta'); // CDT
+	public function index() {
+		date_default_timezone_set('Asia/Jakarta'); 
 		$current_date = date('Y-m-d H:i:s');
 		$kelas = Auth::user()->kelas;
 		$this->data['nearest'] = Event::where('kelas','=',$kelas)->where('waktu_mulai','>=',$current_date)->min('waktu_mulai');
@@ -26,63 +20,20 @@ class UserController extends Controller {
 		return view('user.HomeUser',$this->data);
 	}
 
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		//
-	}
-
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
-		//
-	}
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		//
-	}
-
-	public function scoreboards()
-	{
+	public function scoreboards() {
 		if (Request::isMethod('get')) {
-			# code...
+			$kelas = Auth::user()->kelas;
+			$this->data['event'] = Event::where('kelas','=',$kelas)->get();
+			return view('user.scoreboard.index',$this->data);
+		} 
+		else {
+			$id = Input::get('event');
+			return redirect('user/scoreboard/'.$id);
+		}
+	}
+
+	public function scoreboardsUser() {
+		if (Request::isMethod('get')) {
 			$kelas = Auth::user()->kelas;
 			$this->data['event'] = Event::where('kelas','=',$kelas)->get();
 			return view('user.scoreboard.index',$this->data);
@@ -92,21 +43,7 @@ class UserController extends Controller {
 		}
 	}
 
-	public function scoreboardsUser()
-	{
-		if (Request::isMethod('get')) {
-			# code...
-			$kelas = Auth::user()->kelas;
-			$this->data['event'] = Event::where('kelas','=',$kelas)->get();
-			return view('user.scoreboard.index',$this->data);
-		} else {
-			$id = Input::get('event');
-			return redirect('user/scoreboard/'.$id);
-		}
-	}
-
-	public function scoreboard($id)
-	{
+	public function scoreboard($id) {
 		$event = Event::find($id);
 		$nilai = array();
 		$user = User::where('kelas',$event->kelas)->where('role_id', 3)->get();
@@ -137,20 +74,6 @@ class UserController extends Controller {
 		$this->data['nilai'] = $nilai;
 		$this->data['id'] = $id;
 		$this->data['event'] = $event;
-		//var_dump($this->data);
-		//break;
 		return view('user.scoreboard.board',$this->data);
 	}
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		//
-	}
-
 }

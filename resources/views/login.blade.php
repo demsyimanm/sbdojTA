@@ -70,8 +70,8 @@
 <div class="ui middle aligned center aligned grid">
   <div class="column">
     <h2 class="ui teal image header">
-      <img src="{{URL::to('assets/image/alpro2.png')}}" style="width:50%" class="image">
-      <div class="content" style="color:#0A3E56">
+      <img src="{{URL::to('assets/image/horizontal.png')}}" style="width:80%" class="image">
+      <div class="content" style="color:#b4312f ">
         Log-in to your account
       </div>
     </h2>
@@ -90,7 +90,7 @@
           </div>
         </div>
         {{csrf_field()}}
-        <div class="ui fluid large teal submit button" style="background-color:#0A3E56">Login</div>
+        <div class="ui fluid large teal submit button" style="background-color:#b4312f ">Login</div>
       </div>
 
       <div class="ui error message"></div>

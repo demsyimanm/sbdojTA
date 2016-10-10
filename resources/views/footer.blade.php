@@ -27,7 +27,10 @@
     <script src="{{URL::to('assets/Semantic/components/dropdown.js')}}"></script>
     <script src="{{URL::to('assets/Semantic/components/modal.js')}}"></script>
     <script src="{{URL::to('assets/bootstrap/js/bootstrap.js')}}"></script>
+    <script src="{{URL::to('assets/Semantic/components/tab.js')}}"></script>
     <script src="{{URL::to('assets/plugin/datatables/jquery.dataTables.min.js')}}"></script>
     <script src="{{URL::to('assets/plugin/datatables/dataTables.bootstrap.js')}}"></script>
+    <script src="{{ URL::to('assets/AdminLTE/plugins/datepicker/bootstrap-datepicker.js') }}"></script>
+    <script src="{{ URL::to('assets/AdminLTE/plugins/timepicker/bootstrap-timepicker.min.js') }}"></script>
     
     

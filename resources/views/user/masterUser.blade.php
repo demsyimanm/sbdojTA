@@ -1,4 +1,8 @@
+<?php 
+
+?>
 <!DOCTYPE html>
+
 <html lang="en">
 <link rel="icon" type="image/png" href="{{URL::to('assets/image/icon.png')}}">
 @include('header')

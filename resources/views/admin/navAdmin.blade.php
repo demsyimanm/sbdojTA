@@ -88,25 +88,25 @@ $(document).ready(function() {
   ;
   </script>
 
-<div class="ui fixed inverted menu">
+<div class="ui fixed menu" style="box-shadow: 0px 3px 3px 0 rgba(187,16,21,1);">
  <div class="ui container">
     <div class="header item">
-
       <img class ="logo" src="{{URL::to('assets/image/horizontal.png')}}" style="50%"> <a href="{{url('/')}}"></a>
     </div>
-    <!-- <a class="item" href="{{url('/')}}">Dashboard</a> -->
-    <a class="item" href="{{url('accounts')}}">Account</a>
+    <a class="item" href="{{url('/')}}">Home</a>
+    <a class="item" href="{{url('accounts')}}">Accounts</a>
+    <a class="item" href="{{url('databases')}}">Database List</a>
     <a class="item" href="{{url('events')}}">Events</a>
     <a class="item" href="{{url('submissions')}}">Submissions</a>
     <a class="item" href="{{url('scoreboards')}}">Scoreboards</a>
     <div class="right menu">
       <div class="item"  style="float:left">
         <ul class="date" style="margin-bottom:0px">
-          <li id="hours" class="date1" style="display:inline;color:white"> </li>
-          <li id="point" class="date1" style="display:inline;color:white">:</li>
-          <li id="min" class="date1" style="display:inline;color:white"> </li>
-          <li id="point"class="date1" style="display:inline;color:white">:</li>
-          <li id="sec"class="date1" style="display:inline;color:white"> </li>
+          <li id="hours" class="date1" style="display:inline;color:black"> </li>
+          <li id="point" class="date1" style="display:inline;color:black">:</li>
+          <li id="min" class="date1" style="display:inline;color:black"> </li>
+          <li id="point"class="date1" style="display:inline;color:black">:</li>
+          <li id="sec"class="date1" style="display:inline;color:black"> </li>
         </ul>  
       </div>
       <div class="item" style="margin-left:10%;margin-right:10%">

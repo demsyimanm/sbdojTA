@@ -13,7 +13,7 @@
 	</div>
   <div style="padding-top:3%;padding-bottom:3%">
 	  <a class="ui icon teal button" href="{{url('events/add')}}">
-		<i class="trash icon"></i>
+		<i class="plus icon"></i>
 		Tambah Event
 	  </a>
   </div>
@@ -23,13 +23,13 @@
 		  <thead>
 		    <tr>
 		        <th width="5%" style="text-align:center">No</th>
-		        <th width="15%" style="text-align:center">Judul<span style="font-size:11px;"> &nbsp;(click the title to edit questions)</span></th>
+		        <th width="20%" style="text-align:center">Judul<span style="font-size:11px;"> &nbsp;(click the title to edit questions)</span></th>
 		        <th width="12.5%" style="text-align:center">Waktu Mulai</th>
 	        	<th width="12.5%" style="text-align:center">Waktu Akhir</th>
-	        	<th width="5%" style="text-align:center">Kls</th>
-	        	<th width="10%" style="text-align:center">IP</th>
-	        	<th width="10%" style="text-align:center">DB</th>
-	        	<th width="15%" style="text-align:center">Parser</th>
+	        	<th width="5%" style="text-align:center">Kelas</th>
+	        	<th width="12.5%" style="text-align:center">DB Name</th>
+	        	<th width="12.5%" style="text-align:center">DB IP</th>
+	        	<th width="5%" style="text-align:center">Grader Status</th>
 	        	<th width="15%" style="text-align:center">Action</th>
 	      	</tr>
 	      </thead>
@@ -56,17 +56,15 @@
 		              ?>
 		      		<td><b>{{ $date1 }}</b> on <b>{{$time1}}</b></td>
 	      			<td><b>{{ $date2 }}</b> on <b>{{$time2}}</b></td>
-		      		<td class="text-center">{{ $eve->kelas }}</td>
-		      		<td>{{ $eve->ip }}</td>
-	      			<td>{{ $eve->db_name }}</td>
+		      		<td style="text-align:center">{{ $eve->kelas }}</td>
+		      		<td >{{ $eve->listdb->db_name }}</td>
+		      		<td >{{ $eve->listdb->ip }}</td>
 			      	<td>
 			      		<center>
-			      			@if($eve->status == '0')
-			      				<a href="{{URL::to('event/parser/start/'.$eve->id)}}" class="btn btn-success btn-sm">Start</a>
-			      				<a href="#" class="btn btn-danger btn-sm" disabled="">Stop</a>
+			      			@if($eve->listdb->status == '0')
+			      				<div class="ui big red label">Off</div>
 			      			@else
-			      				<a href="#" class="btn btn-success btn-sm" disabled="">Start</a>
-			      				<a href="{{URL::to('event/parser/stop/'.$eve->id)}}" class="btn btn-danger btn-sm" >Stop</a>
+			      				<div class="ui big green label">On</div>
 			      			@endif
 			      		</center>
 		      		</td>

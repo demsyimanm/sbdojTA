@@ -13,6 +13,10 @@
                 {
                   type   : 'empty',
                   prompt : 'NRP Kosong'
+                },
+                {
+                  type   : 'length[10]',
+                  prompt : 'NRP Tidak Valid'
                 }
               ]
             },
@@ -87,6 +91,8 @@
                         <option <?php if ($user->kelas == 'C') echo "selected";?>  value="C">C</option>
                         <option <?php if ($user->kelas == 'D') echo "selected";?>  value="D">D</option>
                         <option <?php if ($user->kelas == 'E') echo "selected";?>  value="E">E</option>
+                        <option <?php if ($user->kelas == 'F') echo "selected";?>  value="F">F</option>
+                        <option <?php if ($user->kelas == 'G') echo "selected";?>  value="G">G</option>
                       </select>
                     @elseif ($user->role_id == 2 or $user->role_id == 3)
                       <input type="text" class="" value="{{$user->kelas}}" readonly="" name="kelas">

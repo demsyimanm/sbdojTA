@@ -88,9 +88,10 @@
   <link rel="stylesheet" type="text/css" href="{{URL::to('assets/Semantic/components/form.css')}}">
   <link rel="stylesheet" type="text/css" href="{{URL::to('assets/Semantic/components/input.css')}}">
   <link rel="stylesheet" type="text/css" href="{{URL::to('assets/Semantic/components/table.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{URL::to('assets/Semantic/components/popup.css')}}">
   <link rel="stylesheet" type="text/css" href="{{URL::to('assets/Semantic/components/button.css')}}">
   <link rel="stylesheet" type="text/css" href="{{URL::to('assets/Semantic/components/list.css')}}">
-  <link rel="stylesheet" type="text/css" href="{{URL::to('assets/Semantic/components/message.css')}}">
+
   <link rel="stylesheet" type="text/css" href="{{URL::to('assets/Semantic/components/icon.css')}}">
   <link rel="stylesheet" type="text/css" href="{{URL::to('assets/Semantic/components/dropdown.css')}}">
   <link rel="stylesheet" type="text/css" href="{{URL::to('assets/Semantic/components/transition.css')}}">
@@ -100,6 +101,7 @@
   <link rel="stylesheet" type="text/css" href="{{URL::to('assets/plugin/datepicker/dist/ng-flat-datepicker.css')}}">
   <link rel="stylesheet" type="text/css" href="{{URL::to('assets/plugin/datatables/dataTables.bootstrap.css')}}">
   <link rel="stylesheet" type="text/css" href="{{URL::to('assets/plugin/timepicker/DateTimePicker.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{URL::to('assets/sweetalert/sweetalert.css')}}">
   <link rel="stylesheet" href="{{ URL::to('assets/AdminLTE/plugins/datepicker/datepicker3.css')}}">
   <link rel="stylesheet" href="{{ URL::to('assets/AdminLTE/plugins/timepicker/bootstrap-timepicker.min.css')}}">
 

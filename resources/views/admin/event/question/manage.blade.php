@@ -13,7 +13,7 @@
 	</div>
   <div style="padding-top:3%;padding-bottom:3%">
 	  <a class="ui icon teal button" href="{{URL::to('questions/add/'.$eve->id)}}">
-		<i class="trash icon"></i>
+		<i class="plus icon"></i>
 		Tambah Pertanyaan
 	  </a>
   </div>

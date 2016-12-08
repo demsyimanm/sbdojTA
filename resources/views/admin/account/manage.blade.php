@@ -13,9 +13,13 @@
 	</div>
   <div style="padding-top:3%;padding-bottom:3%">
 	  <a class="ui icon teal button" href="{{url('accounts/add')}}">
-		<i class="trash icon"></i>
+		<i class="plus icon"></i>
 		Tambah User
 	  </a>
+	  <button class="ui icon green button right floated" onclick="upload()">
+		<i class="upload icon"></i>
+		Upload data Praktikan (Excel File)
+	  </button>
   </div>
   <div style="padding:0%;padding-top:0px">
 	  <div class="ui blue segment" style="height:80%">
@@ -81,10 +85,51 @@
    </div>
 </div>
 
+<div class="ui inverted test modal" id="modalUpload">
+	<form id="form" class="ui form" action="{{url('upload/praktikan')}}" method="post" enctype="multipart/form-data">
+		<div class="ui center aligned icon dividing header" style="margin:2%">
+		    <i class="upload icon"></i>
+		    <div class="content">
+		      Upload Data Praktikan
+		    </div>
+		</div>
+		<div class="content">
+		  <div class="centered container">
+				<div class="sixteen wide field">
+	                <div class="inline fields">
+	                  <div class="two wide field">
+	                    <label>Browse File :</label>
+	                  </div>
+	                  <div class="ten wide field">
+	                    <input type="file" name="praktikan" />
+	                  </div>
+	                </div>
+              	</div>
+			</div>
+		</div>
+
+		<div class="actions">
+			<a class="ui icon blue button left floated" href="{{URL::to('template/uploadPraktikan.xlsx')}}" download>
+				<i class="download icon"></i>
+				Download File Template
+		  	</a>
+		  	<div class="ui red deny button ">Cancel</div>
+		  	<button class="ui positive button blue submit">Upload</button>
+		</div>
+		{{csrf_field()}}
+	</form>
+</div>
+
 <script type="text/javascript">
 	function dele(id){
         $('#modaldiv').modal('show');
         $('.button_modal').attr({href:id});
+	};
+	function upload(){
+        $('#modalUpload')
+        .modal({blurring: true})
+        .modal('setting', 'closable', false)
+        .modal('show');
 	};
 </script>
 <script> 
@@ -92,4 +137,11 @@
     $("#matkul").DataTable();
         });
 </script>
+<?php 
+if(Session::has('status') && Session::get('status') == 'success'){
+        echo '<script language="javascript">';
+            echo 'swal("Berhasil!", "Data berhasil ditambahkan!", "success");';
+            echo '</script>';
+      }
+?>
 @endsection

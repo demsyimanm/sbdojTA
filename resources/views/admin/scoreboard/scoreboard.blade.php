@@ -17,7 +17,7 @@
 		  <thead>
 		    <tr>
 		        <th width="5%" style="text-align:center">No</th>
-		        <th width="25%" style="text-align:center">NRP</th>
+		        <th width="15%" style="text-align:center">NRP</th>
 		        <?php $sum = 0;?>
 		        @foreach($question as $quest)
 		        	<th style="text-align:center">{{ $quest->judul }}</th>
@@ -33,7 +33,7 @@
 		    	<td style="text-align:center"><?php echo $i++ ?></td>
 		    		<?php $nilai_tot = 0;?>
 	    			@foreach($value as $item)
-				    	<td cstyle="text-align:center"><?php echo $item ?></td>
+				    	<td style="text-align:center;"><?php echo $item ?></td>
 			        @endforeach
 			    	
 	    	</tr>

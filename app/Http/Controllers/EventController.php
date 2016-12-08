@@ -15,6 +15,7 @@ use App\User;
 use App\Event;
 use App\Submission;
 use App\Question;
+use App\ListDB;
 use DateTime;
 
 class EventController extends Controller {
@@ -37,6 +38,7 @@ class EventController extends Controller {
 		if(Auth::user()->role->id == 1 || Auth::user()->role->id == 2) { 
 			$this->data['user'] = Auth::user()->role->id;
 			$this->data['kelas'] = Auth::user()->kelas;
+			$this->data['dbs'] = ListDB::get();
 			if (Request::isMethod('get')) {
 				return View::make('admin.event.create',$this->data);
 			} 
@@ -49,125 +51,13 @@ class EventController extends Controller {
 				$data['waktu_mulai'] = $temp_tgl_mulai." ".$data['wkt_mulai'];
 				$data['waktu_akhir'] = $temp_tgl_akhir." ".$data['wkt_akhir'];
 				$ev_id = Event::insertGetId(array(
-					'judul' => $data['judul'], 
-					'konten' => $data['konten'], 
-					'waktu_mulai' => $data['waktu_mulai'], 
-					'waktu_akhir' => $data['waktu_akhir'],
-					'kelas' => $data['kelas'],
-					'ip' => $data['ip'],
-					'db_username' => $data['conn_username'],
-					'db_password' => $data['conn_password'],
-					'db_name' => $data['db_name']
+					'judul' 		=> $data['judul'], 
+					'konten' 		=> $data['konten'], 
+					'waktu_mulai' 	=> $data['waktu_mulai'], 
+					'waktu_akhir' 	=> $data['waktu_akhir'],
+					'kelas' 		=> $data['kelas'],
+					'listdb_id' 	=> $data['ip'],
 				));
-				/*$temp_file = "parser_".$ev_id.".py";
-				$file = fopen("../parser/parser_".$ev_id.".py", "wb") or die("Unable to open file!");
-				$content = "#!/usr/bin/python
-import MySQLdb
-import time
-import sys
-try:
-  db_kunci= MySQLdb.connect(".'"'.$data['ip'].'"'.", ".'"'.$data['conn_username'].'"'.", ".'"'.$data['conn_password'].'"'.", ".'"'.$data['db_name'].'"'.")
-  cursor_kunci = db_kunci.cursor()
-  while True:
-    db= MySQLdb.connect('localhost', 'root', 'komputer,.oyeoye', 'sbd')
-    cursor = db.cursor()
-    
-    try:
-     sql = '''select id, question_id, users_id, jawaban,status from submission where status = 0 having id = min(id)'''
-     cursor.execute(sql)
-     unchecked = cursor.fetchone()
-     sub_id = ''
-     ques_id = ''
-     user_id = ''
-     ans = ''
-     stat = ''
-     tanda = 0
-
-     while unchecked is not None:
-         sub_id = unchecked[0]
-         ques_id = unchecked[1]
-         user_id = unchecked[2]
-         ans = unchecked[3]
-         stat = unchecked[4]
-         unchecked = cursor.fetchone()
-
-
-     if (sub_id!='') : 
-         tanda = 1
-
-     if (tanda==1):
-         cursor_kunci.execute(ans)
-         results = cursor_kunci.fetchall()
-         num_fields = len(cursor_kunci.description)
-         
-         hasil=[[0 for x in range(num_fields)] for x in range(5000)]
-         rows=0
-         for res in results:
-             for column in range(num_fields):
-                 hasil[rows][column] = res[column]
-             rows+=1
-
-         kunci = '''select jawaban from question where id='''+ str(ques_id)
-         cursor.execute(kunci)
-         temp = cursor.fetchone()
-         while temp is not None:
-             temp_kunci = temp[0]
-             temp = cursor.fetchone()
-         cursor_kunci.execute(temp_kunci)
-         res_kunci = cursor_kunci.fetchall()
-         num_fields_1 = len(cursor_kunci.description)
-         arr_kunci=[[0 for x in range(num_fields_1)] for x in range(5000)]
-         row_kunci=0
-         for res_key in res_kunci:
-             for column_kunci in range(num_fields_1):
-                 arr_kunci[row_kunci][column_kunci] = res_key[column_kunci]
-             row_kunci+=1
-         flag=0
-         if (num_fields != num_fields_1): 
-            flag=1
-            
-         if (rows != row_kunci): 
-            flag=1
-            
-
-         if (flag==0):
-             for row_compare in range(row_kunci):
-                 for column_compare in range(num_fields):
-                     if (hasil[row_compare][column_compare]!=arr_kunci[row_compare][column_compare]):
-                         print hasil[row_compare][column_compare]
-                         print arr_kunci[row_compare][column_compare]
-                         flag=1
-             
-         if (flag==1): 
-             update1 = '''update submission set nilai = 0, status = 1 where id = '''+str(sub_id)
-             cursor.execute(update1)
-             db.commit()
-             #print 'try'
-             print 'query failed'
-
-         elif (flag==0): 
-             update2 = '''update submission set nilai = 100, status = 1 where id = '''+str(sub_id)
-             cursor.execute(update2)
-             db.commit()
-             print 'query success'
-
-    except:
-        db.rollback()
-        update1 = '''update submission set nilai = 0, status = 1 where id = '''+str(sub_id)
-        cursor.execute(update1)
-        db.commit()
-        print 'enter except'
-        print 'query failed'
-    time.sleep(1)
-    db.close()
-  db_kunci.close()
-except KeyboardInterrupt:
-  sys.exit(0)
-except:
-  print 'berhenti'
-  execfile(".$temp_file.")";
-				fwrite($file, $content);
-				fclose($file);*/
 				return redirect('events');
 			}
 		} 
@@ -177,14 +67,14 @@ except:
 	}
 
 	public function parserStart($id){
-		Event::where('id', $id)->update(array(
+		ListDB::where('id', $id)->update(array(
 			'status' => '1'
 		));
 		return redirect("http://localhost:3000/start?id=".$id);
 	}
 
 	public function ParserStop($id) {
-		Event::where('id', $id)->update(array(
+		ListDB::where('id', $id)->update(array(
 			'status' => '0'
 		));
 		return redirect("http://localhost:3000/stop?id=".$id);
@@ -222,8 +112,17 @@ except:
 		foreach ($quest_id as $key => $value) {
 			array_push($pertanyaan, $value->id);
 		}
-		$submissions = Submission::whereIn('question_id', $pertanyaan)->get();
-		return view('admin.event.viewSubmission', compact('submissions', 'event'));
+		if(Auth::user()->role_id == 3)
+		{
+			$submissions = Submission::whereIn('question_id', $pertanyaan)->where('users_id',Auth::user()->id)->get();
+			return view('user.event.viewSubmission', compact('submissions', 'event'));
+		}
+		else
+		{	
+			$submissions = Submission::whereIn('question_id', $pertanyaan)->get();
+			return view('admin.event.viewSubmission', compact('submissions', 'event'));
+		}
+		
 
 	}
 
@@ -233,6 +132,7 @@ except:
 			$this->data['user'] = Auth::user()->role->id;
 			$this->data['kelas'] = "";
 			$this->data['eve'] = Event::find($id);
+			$this->data['dbs'] = ListDB::get();
 			if (Request::isMethod('get')) {
 				return View::make('admin.event.update', $this->data);
 			} 
@@ -243,15 +143,12 @@ except:
 				$data['waktu_mulai'] = $temp_tgl_mulai." ".$data['wkt_mulai'];
 				$data['waktu_akhir'] = $temp_tgl_akhir." ".$data['wkt_akhir'];
 				Event::where('id', $id)->update(array(
-					'judul' => $data['judul'], 
-					'konten' => $data['konten'], 
-					'waktu_mulai' => $data['waktu_mulai'], 
-					'waktu_akhir' => $data['waktu_akhir'],
-					'kelas' => $data['kelas'],
-					'ip' => $data['ip'],
-					'db_username' => $data['conn_username'],
-					'db_password' => $data['conn_password'],
-					'db_name' => $data['db_name']
+					'judul' 		=> $data['judul'], 
+					'konten' 		=> $data['konten'], 
+					'waktu_mulai' 	=> $data['waktu_mulai'], 
+					'waktu_akhir' 	=> $data['waktu_akhir'],
+					'kelas' 		=> $data['kelas'],
+					'listdb_id'		=> $data['db']
 				));
 				return redirect('events');
 			}
@@ -261,8 +158,9 @@ except:
 			$kelas = Auth::user()->kelas;
 			$user = Auth::user()->role->id;
 			$even = Event::find($id);
+			$dbs = ListDB::get();
 			if (Request::isMethod('get')) {
-				return View::make('admin.event.update', compact('kelas','user','even'));
+				return View::make('admin.event.update', compact('kelas','user','even','dbs'));
 			} 
 			else if (Request::isMethod('post')) {
 				$data = Input::all();
@@ -271,15 +169,12 @@ except:
 				$data['waktu_mulai'] = $temp_tgl_mulai." ".$data['wkt_mulai'];
 				$data['waktu_akhir'] = $temp_tgl_akhir." ".$data['wkt_akhir'];
 				Event::where('id', $id)->update(array(
-					'judul' => $data['judul'], 
-					'konten' => $data['konten'], 
-					'waktu_mulai' => $data['waktu_mulai'], 
-					'waktu_akhir' => $data['waktu_akhir'],
-					'kelas' => $data['kelas'],
-					'ip' => $data['ip'],
-					'db_username' => $data['conn_username'],
-					'db_password' => $data['conn_password'],
-					'db_name' => $data['db_name']
+					'judul' 		=> $data['judul'], 
+					'konten' 		=> $data['konten'], 
+					'waktu_mulai' 	=> $data['waktu_mulai'], 
+					'waktu_akhir' 	=> $data['waktu_akhir'],
+					'kelas' 		=> $data['kelas'],
+					'listdb_id'		=> $data['db']
 				));
 				return redirect('events');
 			}

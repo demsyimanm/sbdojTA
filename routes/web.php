@@ -12,9 +12,22 @@
 */
 
 Route::get('/','HomeController@login');
-Route::get('login','HomeController@login');
+Route::get('login', function () {
+    return redirect('/');
+});
+
 
 Route::post('login','HomeController@login');
+
+/*RESET PASSWORD*/
+Route::get('reset/password','AccountController@resetPassword');
+Route::post('reset/password','AccountController@resetPassword');
+Route::get('reset/password/verification','AccountController@verification');
+Route::post('reset/password/verification','AccountController@verification');
+
+Route::get('foo', function () {
+    return 'Hello World';
+});
 
 Route::group(['middleware' => 'auth'], function()
 {
@@ -27,6 +40,7 @@ Route::group(['middleware' => 'auth'], function()
 		Route::get('accounts/edit/{id}','AccountController@update');
 		Route::post('accounts/edit/{id}','AccountController@update');
 		Route::get('accounts/remove/{id}','AccountController@destroy');
+		Route::post('upload/praktikan','AccountController@upload');
 
 		/*EVENT*/
 		Route::get('events','EventController@index');
@@ -49,6 +63,14 @@ Route::group(['middleware' => 'auth'], function()
 		Route::post('submissions', 'EventController@viewSubmissions');
 		Route::get('submissions/{id}', 'EventController@viewSubmissionsSubmit');
 
+		/*EVENT*/
+		Route::get('databases','DatabaseController@index');
+		Route::get('databases/add','DatabaseController@create');
+		Route::post('databases/add','DatabaseController@create');
+		Route::get('databases/edit/{id}','DatabaseController@update');
+		Route::post('databases/edit/{id}','DatabaseController@update');
+		Route::get('databases/remove/{id}','DatabaseController@destroy');
+
 		/*PARSER*/
 		Route::get('event/parser/start/{id}', 'EventController@parserStart');
 		Route::get('event/parser/stop/{id}', 'EventController@parserStop');
@@ -61,6 +83,12 @@ Route::group(['middleware' => 'auth'], function()
 		Route::get('events','EventController@index');
 		Route::get('questions/{id}','QuestionController@index');
 		Route::post('question/{id1}/submit/{id2}', array('before' => 'csrf', 'uses' => 'QuestionController@submit'));
+
+		/*PROFILE*/
+		Route::get('profile','AccountController@profile');
+		Route::post('profile','AccountController@profile');
+		Route::post('auth/password','AccountController@passwordResetAuth');
+
 
 	/*SCOREBOARD*/
 	Route::get('scoreboards', 'AdminController@scoreboards');

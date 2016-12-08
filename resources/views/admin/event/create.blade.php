@@ -34,42 +34,15 @@
                 },
               ]
             },
-            ip: {
-              identifier  : 'ip',
+            db: {
+              identifier  : 'db',
               rules: [
                 {
                   type   : 'empty',
-                  prompt : 'IP database kosong'
+                  prompt : 'Database Kosong'
                 },
               ]
             },
-            conn_username: {
-              identifier  : 'conn_username',
-              rules: [
-                {
-                  type   : 'empty',
-                  prompt : 'Database Connection Username kosong'
-                },
-              ]
-            },
-            conn_password: {
-              identifier  : 'conn_password',
-              rules: [
-                {
-                  type   : 'empty',
-                  prompt : 'Database Connecttion Password kosong'
-                },
-              ]
-            },
-            db_name: {
-              identifier  : 'db_name',
-              rules: [
-                {
-                  type   : 'empty',
-                  prompt : 'Nama database kosong'
-                },
-              ]
-            }
           }
         })
       ;
@@ -165,6 +138,8 @@
                         <option value="C">C</option>
                         <option value="D">D</option>
                         <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
                       </select>
                     @elseif ($user == 2 )
                       <input type="text" class="" value="{{$kelas}}" readonly="" name="kelas">
@@ -176,40 +151,14 @@
               <div class="sixteen wide field">
                 <div class="inline fields">
                   <div class="three wide field">
-                    <label>Database IP</label>
+                    <label>Database</label>
                   </div>
-                  <div class="thirteen wide field">
-                    <input type="text" name="ip" placeholder="Database IP">
-                  </div>
-                </div>
-              </div>
-              <div class="sixteen wide field">
-                <div class="inline fields">
-                  <div class="three wide field">
-                    <label>Connection Username</label>
-                  </div>
-                  <div class="thirteen wide field">
-                    <input type="text" name="conn_username" placeholder="Connection Username">
-                  </div>
-                </div>
-              </div>
-              <div class="sixteen wide field">
-                <div class="inline fields">
-                  <div class="three wide field">
-                    <label>Connection Password</label>
-                  </div>
-                  <div class="thirteen wide field">
-                    <input type="text" name="conn_password" placeholder="Connection Password">
-                  </div>
-                </div>
-              </div>
-              <div class="sixteen wide field">
-                <div class="inline fields">
-                  <div class="three wide field">
-                    <label>Nama Database</label>
-                  </div>
-                  <div class="thirteen wide field">
-                    <input type="text" name="db_name" placeholder="Nama Database">
+                  <div class="four wide field">
+                    <select class="" name="db">
+                      @foreach($dbs as $db)
+                        <option value="{{$db->id}}" selected="">{{$db->db_name}} | {{$db->ip}}</option>
+                      @endforeach
+                    </select>
                   </div>
                 </div>
               </div>

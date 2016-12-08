@@ -96,6 +96,7 @@ class AdminController extends Controller {
 		$event = Event::find($id);
 		$nilai = array();
 		$user = User::where('kelas',$event->kelas)->where('role_id', 3)->orderBy('id','desc')->get();
+		$user_check = User::where('kelas',$event->kelas)->where('role_id', 3)->count();
 		$question = Question::where('event_id', $id)->get();
 		if (!$question->count()) {
 			foreach ($user as $use) {
@@ -140,8 +141,10 @@ class AdminController extends Controller {
 		    $total[$key]  = $row['total'];
 		    $nrp[$key] = $row['nrp'];
 		}
-
-		array_multisort($total, SORT_DESC, $nrp, SORT_ASC, $nilai);		
+		if($user_check>0)
+		{
+			array_multisort($total, SORT_DESC, $nrp, SORT_ASC, $nilai);		
+		}
 		$this->data['question'] = $question;
 		$this->data['user'] = $user;
 		$this->data['nilai'] = $nilai;

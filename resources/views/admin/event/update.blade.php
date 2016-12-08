@@ -34,42 +34,15 @@
                 },
               ]
             },
-            ip: {
-              identifier  : 'ip',
+            db: {
+              identifier  : 'db',
               rules: [
                 {
                   type   : 'empty',
-                  prompt : 'IP database kosong'
+                  prompt : 'Database Kosong'
                 },
               ]
             },
-            conn_username: {
-              identifier  : 'conn_username',
-              rules: [
-                {
-                  type   : 'empty',
-                  prompt : 'Database Connection Username kosong'
-                },
-              ]
-            },
-            conn_password: {
-              identifier  : 'conn_password',
-              rules: [
-                {
-                  type   : 'empty',
-                  prompt : 'Database Connecttion Password kosong'
-                },
-              ]
-            },
-            db_name: {
-              identifier  : 'db_name',
-              rules: [
-                {
-                  type   : 'empty',
-                  prompt : 'Nama database kosong'
-                },
-              ]
-            }
           }
         })
       ;
@@ -183,6 +156,8 @@
                           <option <?php if ($even->kelas == 'C') echo "selected";?>value="C">C</option>
                           <option <?php if ($even->kelas == 'D') echo "selected";?>value="D">D</option>
                           <option <?php if ($even->kelas == 'E') echo "selected";?>value="E">E</option>
+                          <option <?php if ($even->kelas == 'F') echo "selected";?>value="F">F</option>
+                          <option <?php if ($even->kelas == 'G') echo "selected";?>value="G">G</option>
                       </select>
                     @elseif ($user == 2 )
                       <input type="text" class="" value="{{$even->kelas}}" readonly="" name="kelas">
@@ -194,40 +169,14 @@
               <div class="sixteen wide field">
                 <div class="inline fields">
                   <div class="three wide field">
-                    <label>Database IP</label>
+                    <label>Database</label>
                   </div>
-                  <div class="thirteen wide field">
-                    <input type="text" name="ip" placeholder="Database IP" value="{{$even->ip}}">
-                  </div>
-                </div>
-              </div>
-              <div class="sixteen wide field">
-                <div class="inline fields">
-                  <div class="three wide field">
-                    <label>Connection Username</label>
-                  </div>
-                  <div class="thirteen wide field">
-                    <input type="text" name="conn_username" placeholder="Connection Username"  value="{{$even->db_username}}">
-                  </div>
-                </div>
-              </div>
-              <div class="sixteen wide field">
-                <div class="inline fields">
-                  <div class="three wide field">
-                    <label>Connection Password</label>
-                  </div>
-                  <div class="thirteen wide field">
-                    <input type="text" name="conn_password" placeholder="Connection Password" value="{{$even->db_password}}">
-                  </div>
-                </div>
-              </div>
-              <div class="sixteen wide field">
-                <div class="inline fields">
-                  <div class="three wide field">
-                    <label>Nama Database</label>
-                  </div>
-                  <div class="thirteen wide field">
-                    <input type="text" name="db_name" placeholder="Nama Database" value="{{$even->db_name}}">
+                  <div class="four wide field">
+                    <select class="" name="db">
+                      @foreach($dbs as $db)
+                        <option <?php if ($db->id == $even->listdb_id) echo "selected";?> value="{{$db->id}}">{{$db->db_name}} | {{$db->ip}}</option>
+                      @endforeach
+                    </select>
                   </div>
                 </div>
               </div>

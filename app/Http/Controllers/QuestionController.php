@@ -14,8 +14,14 @@ use App\Http\Controllers\EventController;
 class QuestionController extends Controller {
 	public function index($id)
 	{
+		date_default_timezone_set('Asia/Jakarta'); // CDT
+		$current_date = date("Y-m-d H:i:s", time());
 		$this->data = array();
 		$this->data['eve'] = Event::find($id);
+		if($this->data['eve']->waktu_mulai < $current_date && $this->data['eve']->waktu_akhir < $current_date || $current_date < $this->data['eve']->waktu_mulai )
+		{
+			return redirect('events');
+		}
 		$this->data['judul'] = Question::select('id','judul')->where('event_id','=',$id)->get();
 		$this->data['question'] = Question::where('event_id','=',$id)->get();
 		if(Auth::user()->role->id == 1 || Auth::user()->role->id == 2) {

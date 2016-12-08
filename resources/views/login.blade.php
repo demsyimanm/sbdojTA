@@ -39,10 +39,6 @@
                   type   : 'empty',
                   prompt : 'Please enter your username'
                 },
-                {
-                  type   : 'length[2]',
-                  prompt : 'Please enter a valid username'
-                }
               ]
             },
             password: {
@@ -52,10 +48,15 @@
                   type   : 'empty',
                   prompt : 'Please enter your password'
                 },
+              ]
+            },
+            nrp: {
+              identifier  : 'nrp',
+              rules: [
                 {
-                  type   : 'length[2]',
-                  prompt : 'Your password must be at least 6 characters'
-                }
+                  type   : 'empty',
+                  prompt : 'Please enter your NRP'
+                },
               ]
             }
           }
@@ -98,11 +99,155 @@
     </form>
 
     <div class="ui message">
-      <p><b>Algorithm and Programming Laboratory</b></p>
-      <p>Teknik Informatika - ITS Surabaya</p>
+      Forgot your password ?
+      <a onclick="forget('')" href="#" style="background-color:rgba(0,0,0,0);color:#46a3db">
+        Click here!
+      </a>
     </div>
   </div>
 </div>
 
 </body>
+<div class="ui inverted test small first coupled modal" id="modalForget">
+  <form id="formForget" class="ui form" action="{{url('reset/password')}}" method="post">
+    <div class="ui center aligned icon dividing header" style="margin:2%">
+        <i class="refresh icon"></i>
+        <div class="content">
+          Reset Password
+        </div>
+    </div>
+    <div class="content">
+      <div class="centered container">
+        <div class="sixteen wide field">
+          <div class="ten wide field">
+            <label>Masukkan NRP Anda</label>
+          </div>
+          <div class="ten wide field">
+            <input type="text" name="nrp" placeholder="NRP" id="nrp" />
+            <div class="ui error message"></div>
+          </div>
+        </div><br>
+      </div>
+    </div>
+    <div class="actions">
+      <div class="ui red deny button ">Cancel</div>
+      <a class="ui positive button blue " id="buttonSubmit">Submit</a>
+    </div>
+    {{csrf_field()}}
+  </form>
+</div>
+
+<div class="ui small second coupled modal" id="secondModal">
+  <div class="header">
+    Kode Verifikasi telah dikirim ke Email Anda
+  </div>
+  <div class="content">
+    <div class="description">
+      <p>Silahkan cek email Anda untuk mendapatkan kode verifikasi guna mengubah password Anda</p>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="ui approve blue button submit" onclick="submit()" id="submit">
+      <i class="checkmark icon"></i>
+      Next
+    </button>
+    
+  </div>
+</div>
+  
+
+<script type="text/javascript">
+  $('#formForget input').keydown(function (e) {
+      if (e.keyCode == 13) {
+          var inputs = $(this).parents("form").eq(0).find(":input");
+          if (inputs[inputs.index(this) + 1] != null) {                    
+              inputs[inputs.index(this) + 1].focus();
+          }
+          e.preventDefault();
+          return false;
+      }
+  });
+  $('#submit').keydown(function (e) {
+      if (e.keyCode == 13) {
+          var inputs = $(this).parents("form").eq(0).find(":input");
+          if (inputs[inputs.index(this) + 1] != null) {                    
+              inputs[inputs.index(this) + 1].focus();
+          }
+          e.preventDefault();
+          return false;
+      }
+  });
+  function forget(){
+        $('#modalForget')
+        .modal({blurring: true})
+        .modal('setting', 'closable', false)
+        .modal('show');
+
+  };
+
+  $('#buttonSubmit').click(function (e){
+    if ($.trim($('#nrp').val()) == '')
+    {
+      $('#formForget').submit();
+      return false;
+    }
+    else
+    {
+      $('.second.modal')
+      .modal('attach events', '.first.modal .button')
+      .modal('setting', 'closable', false)
+      .modal('show');
+    }
+  });
+
+
+  function submit()
+  {
+    $('#formForget').submit();
+  };
+
+  $('.coupled.modal')
+    .modal({
+      allowMultiple: false
+  });
+</script>
+<?php 
+if(Session::has('status') && Session::get('status') == 'success'){
+        echo '<script language="javascript">';
+        echo 'swal("Berhasil!", "Password berhasil diubah!", "success");';
+        echo '</script>';
+  }
+
+else if(Session::has('status') && Session::get('status') == 'not-in-state'){
+        echo '<script language="javascript">';
+        echo 'swal("Gagal!", "Anda belum merequest pergantian password!", "error");';
+        echo '</script>';
+  }
+
+else if(Session::has('status') && Session::get('status') == 'wrong-code'){
+        echo '<script language="javascript">';
+        echo 'swal("Gagal!", "Kode yang Anda masukkan salah!", "error");';
+        echo '</script>';
+  }
+else if(Session::has('status') && Session::get('status') == 'failed'){
+        echo '<script language="javascript">';
+        echo 'swal("Gagal!", "Gagal mengubah password!", "error");';
+        echo '</script>';
+  }
+else if(Session::has('status') && Session::get('status') == 'not-exist'){
+        echo '<script language="javascript">';
+        echo 'swal("Gagal!", "NRP yang Anda masukkan tidak terdaftar!", "error");';
+        echo '</script>';
+  }
+else if(Session::has('status') && Session::get('status') == 'dont-have-right'){
+        echo '<script language="javascript">';
+        echo 'swal("Gagal!", "Anda tidak berhak mengganti password!", "error");';
+        echo '</script>';
+  }
+else if(Session::has('status') && Session::get('status') == 'failed-login'){
+      echo '<script language="javascript">';
+      echo 'swal("Gagal!", "Password atau username salah", "error");';
+      echo '</script>';
+}
+?>
 </html>

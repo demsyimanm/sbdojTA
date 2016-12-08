@@ -18,11 +18,10 @@
 		    <tr>
 		        <th width="5%" style="text-align:center">No</th>
 		        <th width="25%" style="text-align:center">Judul</th>
-		        <th width="30%" style="text-align:center">Konten</th>
-		        <th width="12.5%" style="text-align:center">Waktu Mulai</th>
-	        	<th width="12.5%" style="text-align:center">Waktu Akhir</th>
+		        <th width="20%" style="text-align:center">Waktu Mulai</th>
+	        	<th width="20%" style="text-align:center">Waktu Akhir</th>
 	        	<th width="5%" style="text-align:center">Kelas</th>
-	        	<th width="10%" style="text-align:center">Action</th>
+	        	<th width="25%" style="text-align:center">Action</th>
 	      	</tr>
 	      </thead>
 		  <tbody>
@@ -37,9 +36,8 @@
 		      		@if($eve->waktu_mulai < $current_date && $eve->waktu_akhir < $current_date || $current_date < $eve->waktu_mulai)
 		      			<td><a href="#" class="disabled" disabled="">{{ $eve->judul }}</td>
 		      		@else
-		      			<td><a href="{{ URL::to('user/question/'. $eve->id) }}" >{{ $eve->judul }}</td>
+		      			<td><a href="{{ URL::to('questions/'. $eve->id) }}" >{{ $eve->judul }}</td>
 		      		@endif
-		      		<td><?php echo nl2br(substr($eve->konten,0,60))." ..."?></td>
 		      		<?php
 		                $timestamp1 = $eve->waktu_mulai;
 		                $datetime1 = explode(" ", $timestamp1);
@@ -63,9 +61,9 @@
 					      	@if($eve->waktu_mulai < $current_date && $eve->waktu_akhir < $current_date || $current_date < $eve->waktu_mulai )
 				      			<a href="#" class="ui right labeled icon primary button disabled"><i class="right arrow icon" style="height:135%"></i> Pilih</a>
 				      		@else
-				      			<a href="{{ URL::to('user/question/'. $eve->id) }}" class="ui right labeled icon primary button"><i class="right arrow icon" style="height:135%"></i> Pilih</a>
+				      			<a href="{{ URL::to('questions/'. $eve->id) }}" class="ui right labeled icon primary button"><i class="right arrow icon" style="height:135%"></i> Pilih</a>
 				      		@endif
-
+				      		<a href="{{ URL::to('submissions/'. $eve->id) }}" class="ui right labeled icon green button"><i class="right arrow icon" style="height:135%"></i> Lihat Submission</a>
 				      	</center>
 			      	</td>
 			    </tr>

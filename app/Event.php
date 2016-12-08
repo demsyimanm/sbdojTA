@@ -21,10 +21,7 @@ class Event extends Model
 		'waktu_mulai',
 		'waktu_akhir',
 		'kelas',
-		'ip',
-		'conn_username',
-		'conn_password',
-		'db_name'
+		'listdb_id'
 	);
 
 	protected $SoftDelete = true;
@@ -32,7 +29,12 @@ class Event extends Model
 
 	public function question()
 	{
-		return $this->hasMany('App\Models\QuestionModel');
+		return $this->hasMany('App\Question');
+	}
+
+	public function listdb()
+	{
+		return $this->belongsTo('App\ListDB');
 	}
 	
 }

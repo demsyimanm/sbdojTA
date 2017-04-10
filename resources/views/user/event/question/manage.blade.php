@@ -123,7 +123,7 @@
 							                    <div class="ui default segment" style="width:100%;height:300px">
 							                        <div id="editor{{$a}}" class="editor"></div>
 							                     </div>
-							                    <textarea name="jawaban{{$a}}"></textarea>
+							                    <textarea name="jawaban{{$a}}" id="jawab{{$a}}"></textarea>  
 							                </div>
 							          	</div>
 							          	<br>
@@ -132,6 +132,9 @@
 							              		<button type="submit" class="btn btn-primary btn-block btn-flat">Submit</button>
 							            	</div><!-- /.col -->
 							          	</div>
+							          	<br>
+							          	<div  class="ui orange inverted segment" id="error{{$a}}"><ul >
+							          	</ul></div>
 							          	<input type="hidden" name="jumlah" value="{{$i}}">
 							        </form>
 				          		</div>
@@ -150,8 +153,10 @@
   .dropdown(); 
 </script>
 <script src="{{URL::to('assets/plugin/ace/src/ace.js')}}"></script>
+<script src="{{URL::to('assets/plugin/ace/src/ext-language_tools.js')}}"></script>
 	<script>
 		    $(document).ready(function() {
+		    	var keywords = ["select","insert","update","delete","from","where","and","or","group","by","order","limit","offset","having","as","case","when","else","end","type","left","right","join","on","outer","desc","asc","union","create","table","primary","key","if","foreign","not","references","default","null","inner","cross","natural","database","drop","grant"];
 				@for ($sum=0;$sum < $i;$sum++)
 			      editor{{$sum}} = ace.edit('editor{{$sum}}');
 			      var textarea{{$sum}} = $('textarea[name="jawaban{{$sum}}"]').hide();
@@ -161,8 +166,43 @@
 			      editor{{$sum}}.getSession().on('change', function(){
 			        textarea{{$sum}}.val(editor{{$sum}}.getSession().getValue());
 			      });
+			      editor{{$i}} = ace.edit("editor{{$sum}}")
+				  editor{{$i}}.setOptions({
+				    mode: "ace/mode/sql",
+				    enableBasicAutocompletion: true,
+				    enableLiveAutocompletion: true
+				  });
+				  editor{{$i}}.completers.push({
+				    getCompletions: function(editor, session, pos, prefix, callback) {
+				      callback(null, [
+				        
+				      ]);
+				    }
+				  });
+				  editor = ace.edit("editor{{$sum}}")
+					editor.getSession().on('change', function(){
+				        
+				        var array{{$sum}} = [];
+					    str = document.getElementById('jawab{{$sum}}').value;
+					    splitedString = str.split(" ");
+					    for (var z = 0; z < splitedString.length; z++) {
+					    	if( keywords.indexOf(splitedString[z]) >= 0)
+					    	{
+					    		array{{$sum}}.push(splitedString[z]);
+					    	}
+					    }
+					   	document.getElementById('error{{$sum}}').innerHTML= "";
+					   	var targt= document.getElementById('error{{$sum}}');
+					   	for (var y = 0; y < array{{$sum}}.length; y++) {
+					   		$("#error{{$sum}}").append('<li>Syntax <b>"'+array{{$sum}}[y]+'"</b> usahakan menggunakan <b>upppercase</b></li>');
+					   	}
+
+					});
 				@endfor
 		  });
+	</script>
+	<script>
+		
 	</script>
 
 

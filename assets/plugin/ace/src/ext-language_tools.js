@@ -1686,6 +1686,10 @@ var FilteredList = function(array, filterText) {
         var upper = needle.toUpperCase();
         var lower = needle.toLowerCase();
         loop: for (var i = 0, item; item = items[i]; i++) {
+            if (item.meta === 'keyword' || item.meta === 'builtinFunctions'){
+                items[i].name = items[i].name.toUpperCase();
+                items[i].value = items[i].value.toUpperCase();
+            }
             var caption = item.value || item.caption || item.snippet;
             if (!caption) continue;
             var lastIndex = -1;

@@ -23,13 +23,14 @@
 		  <thead>
 		    <tr>
 		        <th width="5%" style="text-align:center">No</th>
-		        <th width="15%" style="text-align:center">DB Name</th>
+		        <th width="10%" style="text-align:center">DB Name</th>
 		        <th width="10%" style="text-align:center">Versi</th>
 		        <th width="12.5%" style="text-align:center">IP</th>
 	        	<th width="12.5%" style="text-align:center">Connection Userame</th>
 	        	<th width="12.5%" style="text-align:center">Connection Password</th>
 	        	<th width="12.5%" style="text-align:center">Grader</th>
-	        	<th width="20%" style="text-align:center">Action</th>
+	        	<th width="12.5%" style="text-align:center">Grader Tutorial</th>
+	        	<th width="10%" style="text-align:center">Action</th>
 	      	</tr>
 	      </thead>
 		  <tbody>
@@ -45,24 +46,33 @@
 			      	<td>
 			      		<center>
 			      			@if($db->status == '0')
-			      				<a href="{{URL::to('event/parser/start/'.$db->id)}}" class="btn btn-success btn-sm">Start</a>
-			      				<a href="#" class="btn btn-danger btn-sm" disabled="">Stop</a>
+			      				<button class="btn btn-success btn-sm " id="start_{{$db->id}}" onclick="start('{{$db->id}}')">Start</button>
+			      				<button class="btn btn-danger btn-sm" id="stop_{{$db->id}}" onclick="stop('{{$db->id}}')" disabled="">Stop</a>
 			      			@else
-			      				<a href="#" class="btn btn-success btn-sm" disabled="">Start</a>
-			      				<a href="{{URL::to('event/parser/stop/'.$db->id)}}" class="btn btn-danger btn-sm" >Stop</a>
+			      				<button class="btn btn-success btn-sm " id="start_{{$db->id}}" disabled="" onclick="start('{{$db->id}}')">Start</button>
+			      				<button class="btn btn-danger btn-sm" id="stop_{{$db->id}}" onclick="stop('{{$db->id}}')">Stop</a>
+			      			@endif
+			      		</center>
+		      		</td>
+		      		<td>
+			      		<center>
+			      			@if($db->gradertutorial_status == '0')
+			      				<button class="btn btn-success btn-sm " id="start_tutorial_{{$db->id}}" onclick="startTutorial('{{$db->id}}')">Start</button>
+			      				<button class="btn btn-danger btn-sm" id="stop_tutorial_{{$db->id}}" onclick="stopTutorial('{{$db->id}}')" disabled="">Stop</a>
+			      			@else
+			      				<button class="btn btn-success btn-sm " id="start_tutorial_{{$db->id}}" disabled="" onclick="startTutorial('{{$db->id}}')">Start</button>
+			      				<button class="btn btn-danger btn-sm" id="stop_tutorial_{{$db->id}}" onclick="stopTutorial('{{$db->id}}')">Stop</a>
 			      			@endif
 			      		</center>
 		      		</td>
 		      		<td>
 				      	<center>
-					      	<a class="ui icon blue button" href="{{ URL::to('databases/edit/'. $db->id) }}">
+					      	<a class="ui icon blue tiny button" href="{{ URL::to('databases/edit/'. $db->id) }}">
 					        	<i class="pencil icon"></i>
-					        	Edit
 					      	</a>
 
-					      	<button class="ui icon test red button del" onclick="dele('{{URL::to('databases/remove/'. $db->id) }}')">
+					      	<button class="ui icon test red tiny button del" onclick="dele('{{URL::to('databases/remove/'. $db->id) }}')">
 					        	<i class="trash icon"></i>
-					        	Hapus
 					      	</button>
 
 				      	</center>
@@ -105,5 +115,63 @@
   $(function () {
     $("#matkul").DataTable();
         });
+</script>
+<script type="text/javascript">
+	function start(id){
+		$.ajax({
+		    type: "GET",
+		    url: '{{URL::to("event/parser/start")}}'+"/"+id
+		}).done(function( msg ) {
+		    if (msg=="true") {
+		    	document.getElementById("start_"+id).disabled = true;
+		    	document.getElementById("stop_"+id).disabled = false;
+		    };
+		});
+	}
+</script>
+<script type="text/javascript">
+	function stop(id){
+		$.ajax({
+		    type: "GET",
+		    url: '{{URL::to("event/parser/stop")}}'+"/"+id
+		}).done(function( msg ) {
+		    if (msg=="true") {
+		    	document.getElementById("start_"+id).disabled = false;
+		    	document.getElementById("stop_"+id).disabled = true;
+		    };
+		    if (msg=="false") {
+		    	alert("Grader tidak ada");
+		    };
+		});
+	}
+</script>
+<script type="text/javascript">
+	function startTutorial(id){
+		$.ajax({
+		    type: "GET",
+		    url: '{{URL::to("tutorial/parser/start")}}'+"/"+id
+		}).done(function( msg ) {
+		    if (msg=="true") {
+		    	document.getElementById("start_tutorial_"+id).disabled = true;
+		    	document.getElementById("stop_tutorial_"+id).disabled = false;
+		    };
+		});
+	}
+</script>
+<script type="text/javascript">
+	function stopTutorial(id){
+		$.ajax({
+		    type: "GET",
+		    url: '{{URL::to("tutorial/parser/stop")}}'+"/"+id
+		}).done(function( msg ) {
+		    if (msg=="true") {
+		    	document.getElementById("start_tutorial_"+id).disabled = false;
+		    	document.getElementById("stop_tutorial_"+id).disabled = true;
+		    };
+		    if (msg=="false") {
+		    	alert("Grader tidak ada");
+		    };
+		});
+	}
 </script>
 @endsection

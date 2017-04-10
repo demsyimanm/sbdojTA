@@ -71,8 +71,8 @@
 <div class="ui middle aligned center aligned grid">
   <div class="column">
     <h2 class="ui teal image header">
-      <img src="{{URL::to('assets/image/horizontal.png')}}" style="width:80%" class="image">
-      <div class="content" style="color:#b4312f ">
+      <img src="{{URL::to('assets/image/icon_baru.png')}}" style="width:80%" class="image">
+      <div class="content" style="color:#00787F ">
         Log-in to your account
       </div>
     </h2>
@@ -91,7 +91,7 @@
           </div>
         </div>
         {{csrf_field()}}
-        <div class="ui fluid large teal submit button" style="background-color:#b4312f ">Login</div>
+        <div class="ui fluid large teal submit button" style="background-color:#00787F ">Login</div>
       </div>
 
       <div class="ui error message"></div>
@@ -100,7 +100,7 @@
 
     <div class="ui message">
       Forgot your password ?
-      <a onclick="forget('')" href="#" style="background-color:rgba(0,0,0,0);color:#46a3db">
+      <a onclick="forget('')" href="#" style="background-color:rgba(0,0,0,0);color:#00787F">
         Click here!
       </a>
     </div>

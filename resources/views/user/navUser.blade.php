@@ -67,8 +67,6 @@ $(document).ready(function() {
     margin-bottom: 110px;
   }
   </style>
-
-  <!--- Example Javascript -->
   <script>
   $(document)
     .ready(function() {
@@ -88,13 +86,14 @@ $(document).ready(function() {
   ;
   </script>
 
-<div class="ui fixed menu" style="box-shadow: 0px 3px 3px 0 rgba(187,16,21,1);">
+<div class="ui fixed menu" style="box-shadow: 0px 3px 3px 0 rgba(0,120,127,1);">
  <div class="ui container">
     <div class="header item">
-      <img class ="logo" src="{{URL::to('assets/image/horizontal.png')}}" style="100%"> <a href="{{url('/')}}"></a>
+      <img class ="logo" src="{{URL::to('assets/image/icon_baru.png')}}" style="100%"> <a href="{{url('/')}}"></a>
     </div>
     <a class="item" href="{{url('/')}}">Home</a>
     <a class="item" href="{{url('events')}}">Events</a>
+    <a class="item" href="{{url('tutorial')}}">Tutorial</a>
     <a class="item" href="{{url('scoreboards')}}">Scoreboards</a>
     <div class="right menu">
       <div class="item"  style="float:left">

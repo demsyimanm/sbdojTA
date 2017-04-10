@@ -46,7 +46,7 @@ class AccountController extends Controller {
 			} 
 			else if (Request::isMethod('post')) {
 				$data = Input::all();
-				User::insertGetId(array(
+				User::create(array(
 					'nama' 		=> $data['nama'], 
 					'username' 	=> $data['username'], 
 					'password' 	=> bcrypt($data['password']), 
@@ -66,7 +66,7 @@ class AccountController extends Controller {
 			} 
 			else if (Request::isMethod('post')) {
 				$data = Input::all();
-				User::insertGetId(array(
+				User::create(array(
 					'nama' 		=> $data['nama'], 
 					'username' 	=> $data['username'], 
 					'password' 	=> bcrypt($data['password']), 
@@ -169,7 +169,7 @@ class AccountController extends Controller {
 		            		}
 		            		else
 		            		{
-						    	User::insertGetId(array(
+						    	User::create(array(
 						    		'username'	=> $data->nrp,
 			                        'nama'		=> $data->nama,
 									'kelas'		=> $data->kelas,

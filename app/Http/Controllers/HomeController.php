@@ -9,6 +9,7 @@ use Request;
 use Input;
 use Session;
 use App\User;
+use App\ListDB;
 use PHPSQLParser\PHPSQLParser;
 
 class HomeController extends Controller {
@@ -67,6 +68,58 @@ class HomeController extends Controller {
         else if (Request::isMethod('get')) {
             if (Auth::check()) {
             	if(Auth::user()->role_id == 1 or Auth::user()->role_id == 2){
+                    exec("Wmic process where (Name like '%python%') get commandline, ProcessId 2>&1",$output);
+                    if($output[0] == "No Instance(s) Available.")
+                    {
+                        ListDB::whereNotNull('ip')->update(array(
+                            'status' => '0'
+                        ));
+                    }
+                    else
+                    {
+                        $id_arr = array();
+                        $id_arr_tutorial = array();
+                        for ($i=1; $i < sizeof($output)-1; $i++) { 
+                            $status = explode(" ", $output[$i]);
+                            $temp_cmd = "";
+                            for ($i=0; $i < sizeof($status); $i++) { 
+                                if($status[$i]!="")
+                                {
+                                    $temp_cmd .= $status[$i]."-";
+                                }
+                            }
+                            if (strpos($status[2], 'grader')!== false)
+                            { 
+                                $split = explode("-", $temp_cmd);
+                                $pid = $split[6];
+                                $command = $split[1];
+                                $grader_id = $split[2];
+                                $check = ListDB::find($grader_id);
+                                if($check->status == 1)
+                                {
+                                    array_push($id_arr, $grader_id);
+                                } 
+                            } 
+                            if (strpos($status[2], 'tutorial')!== false)
+                            { 
+                                $split = explode("-", $temp_cmd);
+                                $pid = $split[6];
+                                $command = $split[1];
+                                $grader_id = $split[2];
+                                $check = ListDB::find($grader_id);
+                                if($check->gradertutorial_status == 1)
+                                {
+                                    array_push($id_arr_tutorial, $grader_id);
+                                } 
+                            } 
+                        }
+                        ListDB::whereNotIn('id', $id_arr)->update(array(
+                            'status' => '0'
+                        ));
+                        ListDB::whereNotIn('id', $id_arr_tutorial)->update(array(
+                            'gradertutorial_status' => '0'
+                        ));
+                    }
                 	return redirect('assistant');
                 }
                 else if (Auth::user()->role_id == 3){

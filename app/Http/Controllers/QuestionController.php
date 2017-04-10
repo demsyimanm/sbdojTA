@@ -18,16 +18,17 @@ class QuestionController extends Controller {
 		$current_date = date("Y-m-d H:i:s", time());
 		$this->data = array();
 		$this->data['eve'] = Event::find($id);
-		if($this->data['eve']->waktu_mulai < $current_date && $this->data['eve']->waktu_akhir < $current_date || $current_date < $this->data['eve']->waktu_mulai )
-		{
-			return redirect('events');
-		}
+		
 		$this->data['judul'] = Question::select('id','judul')->where('event_id','=',$id)->get();
 		$this->data['question'] = Question::where('event_id','=',$id)->get();
 		if(Auth::user()->role->id == 1 || Auth::user()->role->id == 2) {
 			return view('admin.event.question.manage',$this->data);
 		}
 		else if(Auth::user()->role->id == 3) {
+			if($this->data['eve']->waktu_mulai < $current_date && $this->data['eve']->waktu_akhir < $current_date || $current_date < $this->data['eve']->waktu_mulai )
+			{
+				return redirect('events');
+			}
 			return view('user.event.question.manage',$this->data);
 		}
 
@@ -42,7 +43,7 @@ class QuestionController extends Controller {
 			} 
 			else if (Request::isMethod('post')) {
 				$data = Input::all();
-				Question::insertGetId(array(
+				Question::create(array(
 					'event_id' 	=> $id,
 					'judul' 	=> $data['judul'], 
 					'konten' 	=> $data['konten'], 
@@ -67,7 +68,7 @@ class QuestionController extends Controller {
 				break;
 			}
 		}
-		Submission::insertGetId(array(
+		Submission::create(array(
 				'question_id' 	=> $id2,
 				'users_id' 		=> Auth::user()->id,
 				'nilai' 		=> '0', 

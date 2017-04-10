@@ -58,7 +58,7 @@
   <h1 class="ui dividing header">
     <i class="trophy icon" style="padding-bottom:5%"></i>
     <div class="content" >
-      Tambah Event
+      Update Event
     </div>
   </h1>
   <br>

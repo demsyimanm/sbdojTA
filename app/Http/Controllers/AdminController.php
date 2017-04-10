@@ -95,32 +95,18 @@ class AdminController extends Controller {
 	public function scoreboardView($id) {
 		$event = Event::find($id);
 		$nilai = array();
-		$user = User::where('kelas',$event->kelas)->where('role_id', 3)->orderBy('id','desc')->get();
-		$user_check = User::where('kelas',$event->kelas)->where('role_id', 3)->count();
-		$question = Question::where('event_id', $id)->get();
-		if (!$question->count()) {
-			foreach ($user as $use) {
-				$nilai[$use->username]['nrp'] = (string)$use->username;
-			}
-		}
-		else {
-			foreach ($question as $quest) {
-				$submission = Submission::where('question_id',$quest->id)->get();
-				if (!$submission->count()){
-					foreach ($user as $use) {
-						$nilai[$use->username]['nrp'] = (string)$use->username;
-					}
-				}
-				else {
-					foreach ($submission as $sub) {
-						foreach ($user as $use) {
-							$nilai[$use->username]['nrp'] = (string)$use->username;
-							$nilai[$use->username][$sub->question_id] = 0;
-						}
-					}
+		$user = User::where('kelas',$event->kelas)->where('role_id', 3)->get();
+		$soal = array();
+		$question = Question::where('event_id', $id)->orderBy('id','asc')->get();
+		foreach ($question as $quest) {
+			$submission = Submission::where('question_id',$quest->id)->get();
+			foreach ($submission as $sub) {
+				foreach ($user as $use) {
+					$nilai[$use->username][$sub->question_id] = 0;
 				}
 			}
 		}
+
 		foreach ($question as $quest) {
 			foreach ($user as $use) {
 				$submission = Submission::where('question_id',$quest->id)->where('users_id',$use->id)->max('nilai');
@@ -131,20 +117,21 @@ class AdminController extends Controller {
 		foreach ($nilai as $key => $value) {
 			$nilai[$key]['total'] = 0;
 			foreach ($value as $val) {
-				if ($val != (string)$key ) {
-					$nilai[$key]['total'] += $val;
-				}
+				$nilai[$key]['total'] += $val;
 			}
-			$nilai[$key]['total'] = (string)$nilai[$key]['total'];
 		}
-        foreach ($nilai as $key => $row) {
-		    $total[$key]  = $row['total'];
-		    $nrp[$key] = $row['nrp'];
-		}
-		if($user_check>0)
+		/*foreach ($nilai as $val ) {
+			array_push($soal,key(array_values($nilai)[0]));
+		}*/
+		//dd(array_values($nilai)[0]);
+		$soal_array = array_values($nilai)[0];
+		array_pop($soal_array);
+		foreach($soal_array as $quest => $value)
 		{
-			array_multisort($total, SORT_DESC, $nrp, SORT_ASC, $nilai);		
+			$pertanyaan = Question::where('id',$quest)->first();
+			array_push($soal, $pertanyaan->judul);
 		}
+		$this->data['soal'] = $soal;
 		$this->data['question'] = $question;
 		$this->data['user'] = $user;
 		$this->data['nilai'] = $nilai;

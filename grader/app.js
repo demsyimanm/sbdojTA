@@ -27,7 +27,7 @@ objChild.child=child;
 objChild.id=req.query.id;
 arrChild.push(objChild); 
 res.statusCode = 302; 
-res.setHeader("Location", "http://localhost/sbdoj/public/databases");
+res.setHeader("Location", "http://10.151.63.12/sbdoj/databases");
 res.end();
 
 });
@@ -44,7 +44,7 @@ app.get('/stop', function (req, res) {
   }
 
 res.statusCode = 302; 
-res.setHeader("Location", "http://localhost/sbdoj/public/databases");
+res.setHeader("Location", "http://10.151.63.12/sbdoj/databases");
 res.end();
 });
 var server = app.listen(3000, function () {

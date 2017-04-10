@@ -75,6 +75,35 @@ Route::group(['middleware' => 'auth'], function()
 		Route::get('event/parser/start/{id}', 'EventController@parserStart');
 		Route::get('event/parser/stop/{id}', 'EventController@parserStop');
 
+		/*PARSER TUTORIAL*/
+		Route::get('tutorial/parser/start/{id}', 'EventTutorialController@parserStart');
+		Route::get('tutorial/parser/stop/{id}', 'EventTutorialController@parserStop');
+
+		/*TUTORIAL*/
+		Route::get('tutorial','EventTutorialController@index');
+		Route::get('tutorial/add','EventTutorialController@create');
+		Route::post('tutorial/add','EventTutorialController@create');
+		Route::get('tutorial/edit/{id}','EventTutorialController@update');
+		Route::post('tutorial/edit/{id}','EventTutorialController@update');
+		Route::get('tutorial/remove/{id}','EventTutorialController@destroy');
+			/*QUESTION*/
+			Route::get('tutorial/questions/manage/{id}','TutorialController@index');
+			Route::get('tutorial/questions/add/{id}','TutorialController@create');
+			Route::post('tutorial/questions/add/{id}','TutorialController@create');
+			Route::get('tutorial/questions/edit/{id1}/{id2}','TutorialController@update');
+			Route::post('tutorial/questions/edit/{id1}/{id2}','TutorialController@update');
+			Route::get('tutorial/questions/remove/{id1}/{id2}','TutorialController@destroy');
+			/*CATEGORY*/
+			Route::get('categories/add','CategoryController@create');
+			Route::post('categories/add','CategoryController@create');
+			Route::get('categories/edit/{id}','CategoryController@update');
+			Route::post('categories/edit/{id}','CategoryController@update');
+			Route::get('categories/remove/{id}','CategoryController@destroy');
+			/*SUBMISSION*/
+			Route::post('tutorial/submissions', 'EventTutorialController@viewSubmissions');
+			Route::get('tutorial/submissions/{id}', 'EventTutorialController@viewSubmissionsTutorialSubmit');
+
+
 
 
 	/*USER*/
@@ -83,6 +112,11 @@ Route::group(['middleware' => 'auth'], function()
 		Route::get('events','EventController@index');
 		Route::get('questions/{id}','QuestionController@index');
 		Route::post('question/{id1}/submit/{id2}', array('before' => 'csrf', 'uses' => 'QuestionController@submit'));
+
+		/*TUTORIAL*/
+		Route::get('categories','CategoryController@index');
+		Route::get('tutorial/manage/{id}','TutorialController@index');
+		Route::post('tutorial/{id1}/submit/{id2}', array('before' => 'csrf', 'uses' => 'TutorialController@submit'));
 
 		/*PROFILE*/
 		Route::get('profile','AccountController@profile');

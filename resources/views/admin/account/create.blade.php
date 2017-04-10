@@ -14,10 +14,12 @@
                   type   : 'empty',
                   prompt : 'NRP Kosong'
                 },
+                @if(Auth::user()->role_id!=1)
                 {
                   type   : 'length[10]',
                   prompt : 'NRP Tidak Valid'
                 }
+                @endif
               ]
             },
             nama: {

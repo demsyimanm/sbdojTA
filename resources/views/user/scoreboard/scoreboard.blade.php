@@ -31,6 +31,7 @@
 		  	@foreach($nilai as $key	 => $value)
 	    	<tr>
 		    	<td style="text-align:center"><?php echo $i++ ?></td>
+		    	<td class="text-center"><?php echo $key ?></td>
 		    		<?php $nilai_tot = 0;?>
 	    			@foreach($value as $item)
 				    	<td style="text-align:center"><?php echo $item ?></td>

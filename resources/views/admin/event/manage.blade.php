@@ -72,12 +72,10 @@
 				      	<center>
 					      	<a class="ui icon blue button" href="{{ URL::to('events/edit/'. $eve->id) }}">
 					        	<i class="pencil icon"></i>
-					        	Edit
 					      	</a>
 
 					      	<button class="ui icon test red button del" onclick="dele('{{URL::to('events/remove/'. $eve->id) }}')">
 					        	<i class="trash icon"></i>
-					        	Hapus
 					      	</button>
 
 				      	</center>

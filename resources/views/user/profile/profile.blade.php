@@ -104,7 +104,7 @@
   <div style="padding:0%;padding-top:0px">
     <div class="ui blue segment" style="height:80%">
     <div class="ui grid">
-      <div class="four wide column">
+      <div class="five wide column">
           <div class="ui fluid vertical steps">
             <a class="active step sixteen wide column" id="profile" onclick="showFormProfile()">
               <i class="user icon"></i>
@@ -120,7 +120,7 @@
             </a>
           </div>
       </div>
-        <div class="ui attached segment twelve wide column">
+        <div class="ui attached segment eleven wide column">
           <div visible>
             <div class="active tab-pane" id="profileTab">
               <div class="">

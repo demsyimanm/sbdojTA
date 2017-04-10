@@ -31,6 +31,11 @@ class ListDB extends Model
 		return $this->hasMany('App\Event');
 	}
 
+	public function eventtutorial()
+	{
+		return $this->hasMany('App\EventTutorial');
+	}
+
 	public function dbversion()
 	{
 		return $this->belongsTo('App\DBVersion');

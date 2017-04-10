@@ -16,6 +16,59 @@ class DatabaseController extends Controller
 {
     public function index() {
 		if(Auth::user()->role->id == 1 or Auth::user()->role->id == 2 ){
+            exec("Wmic process where (Name like '%python%') get commandline, ProcessId 2>&1",$output);
+            if($output[0] == "No Instance(s) Available.")
+            {
+                ListDB::whereNotNull('ip')->update(array(
+                    'status' => '0',
+                    'gradertutorial_status' => '0'
+                ));
+            }
+            else
+            {
+                $id_arr = array();
+                $id_arr_tutorial = array();
+                for ($i=1; $i < sizeof($output)-1; $i++) { 
+                    $status = explode(" ", $output[$i]);
+                    $temp_cmd = "";
+                    for ($i=0; $i < sizeof($status); $i++) { 
+                        if($status[$i]!="")
+                        {
+                            $temp_cmd .= $status[$i]."-";
+                        }
+                    }
+                    if (strpos($status[2], 'grader')!== false)
+                    { 
+                        $split = explode("-", $temp_cmd);
+                        $pid = $split[6];
+                        $command = $split[1];
+                        $grader_id = $split[2];
+                        $check = ListDB::find($grader_id);
+                        if($check->status == 1)
+                        {
+                            array_push($id_arr, $grader_id);
+                        } 
+                    } 
+                    if (strpos($status[2], 'tutorial')!== false)
+                    { 
+                        $split = explode("-", $temp_cmd);
+                        $pid = $split[6];
+                        $command = $split[1];
+                        $grader_id = $split[2];
+                        $check = ListDB::find($grader_id);
+                        if($check->gradertutorial_status == 1)
+                        {
+                            array_push($id_arr_tutorial, $grader_id);
+                        } 
+                    } 
+                }
+                ListDB::whereNotIn('id', $id_arr)->update(array(
+                    'status' => '0'
+                ));
+                ListDB::whereNotIn('id', $id_arr_tutorial)->update(array(
+                    'gradertutorial_status' => '0'
+                ));
+            }
 			$dbs = ListDB::get();
 			return view('admin.db.manage',compact('dbs'));
 		}
@@ -35,22 +88,23 @@ class DatabaseController extends Controller
 			} 
 			else if (Request::isMethod('post')) {
 				$data = Input::all();
-				$db_id = ListDB::insertGetId(array(
-					'ip' 			=> $data['ip'], 
-					'db_username' 	=> $data['conn_username'],
-					'db_password' 	=> $data['conn_password'],
-					'db_name' 		=> $data['db_name'],
-                    'dbversion_id'  => $data['dbversion'],
-					'status'		=> 0
+				ListDB::create(array(
+					'ip' 			               => $data['ip'], 
+					'db_username' 	                => $data['conn_username'],
+					'db_password' 	                => $data['conn_password'],
+					'db_name' 		                => $data['db_name'],
+                    'dbversion_id'                  => $data['dbversion'],
+					'status'		                => 0,
+                    'gradertutorial_status'         => 0
 				));
                 if($data['dbversion'] == 1)
                 {    
-                    $this->oracleSql($db_id,$data['ip'],$data['db_name'],$data['conn_username'],$data['conn_password']);
+                    //$this->oracleSql($db_id,$data['ip'],$data['db_name'],$data['conn_username'],$data['conn_password']);
                     return redirect('databases');
                 }
                 else if ($data['dbversion'] == 2)
                 {
-                    $this->mySql($db_id,$data['ip'],$data['db_name'],$data['conn_username'],$data['conn_password']);
+                    //$this->mySql($db_id,$data['ip'],$data['db_name'],$data['conn_username'],$data['conn_password']);
                     return redirect('databases');
                 }
 				
@@ -78,16 +132,15 @@ class DatabaseController extends Controller
 					'db_password' 	=> $data['conn_password'],
 					'db_name' 		=> $data['db_name'],
                     'dbversion_id'  => $data['dbversion'],
-					'status'		=> 0
 				));
                 if($data['dbversion'] == 1)
                 {    
-                    $this->oracleSql($id,$data['ip'],$data['db_name'],$data['conn_username'],$data['conn_password']);
+                    //$this->oracleSql($id,$data['ip'],$data['db_name'],$data['conn_username'],$data['conn_password']);
                     return redirect('databases');
                 }
                 else if ($data['dbversion'] == 2)
                 {
-                    $this->mySql($id,$data['ip'],$data['db_name'],$data['conn_username'],$data['conn_password']);
+                    //$this->mySql($id,$data['ip'],$data['db_name'],$data['conn_username'],$data['conn_password']);
                     return redirect('databases');
                 }
 			}
@@ -116,10 +169,10 @@ class DatabaseController extends Controller
 		}
 	}
 
-    public function mySql($db_id,$ip,$db_name,$conn_username,$conn_password)
+    /*public function mySql($db_id,$ip,$db_name,$conn_username,$conn_password)
     {
         $temp_file = "grader_".$db_id.".py";
-        $file = fopen("../grader/grader_".$db_id.".py", "wb") or die("Unable to open file!");
+        $file = fopen("grader/grader_".$db_id.".py", "wb") or die("Unable to open file!");
         $content = "#!/usr/bin/python\
 import MySQLdb
 import cx_Oracle
@@ -170,36 +223,36 @@ try:
                         hasil[rows][column] = res[column]
                     rows+=1
         
-                    kunci = '''select jawaban from question where id='''+ str(ques_id)
-                    cursor.execute(kunci)
+                kunci = '''select jawaban from question where id='''+ str(ques_id)
+                cursor.execute(kunci)
+                temp = cursor.fetchone()
+                while temp is not None:
+                    temp_kunci = temp[0]
+                    temp_kunci = temp_kunci.replace(';', '')
                     temp = cursor.fetchone()
-                    while temp is not None:
-                        temp_kunci = temp[0]
-                        temp_kunci = temp_kunci.replace(';', '')
-                        temp = cursor.fetchone()
-                    cursor_kunci.execute(temp_kunci)
-                    res_kunci = cursor_kunci.fetchall()
-                    num_fields_1 = len(cursor_kunci.description)
-                    arr_kunci=[[0 for x in range(num_fields_1)] for x in range(10000)]
-                    row_kunci=0
-                    for res_key in res_kunci:
-                        for column_kunci in range(num_fields_1):
-                            arr_kunci[row_kunci][column_kunci] = res_key[column_kunci]
-                        row_kunci+=1
-                    flag=0
-                    if (num_fields != num_fields_1): 
-                       flag=1
-                       
-                    if (rows != row_kunci): 
-                       flag=1 
-        
-                    if (flag==0):
-                        for row_compare in range(row_kunci):
-                            for column_compare in range(num_fields):
-                                if (hasil[row_compare][column_compare]!=arr_kunci[row_compare][column_compare]):
-                                    #print hasil[row_compare][column_compare]
-                                    #print arr_kunci[row_compare][column_compare]
-                                    flag=1
+                cursor_kunci.execute(temp_kunci)
+                res_kunci = cursor_kunci.fetchall()
+                num_fields_1 = len(cursor_kunci.description)
+                arr_kunci=[[0 for x in range(num_fields_1)] for x in range(10000)]
+                row_kunci=0
+                for res_key in res_kunci:
+                    for column_kunci in range(num_fields_1):
+                        arr_kunci[row_kunci][column_kunci] = res_key[column_kunci]
+                    row_kunci+=1
+                flag=0
+                if (num_fields != num_fields_1): 
+                   flag=1
+                   
+                if (rows != row_kunci): 
+                   flag=1 
+    
+                if (flag==0):
+                    for row_compare in range(row_kunci):
+                        for column_compare in range(num_fields):
+                            if (hasil[row_compare][column_compare]!=arr_kunci[row_compare][column_compare]):
+                                #print hasil[row_compare][column_compare]
+                                #print arr_kunci[row_compare][column_compare]
+                                flag=1
                         
                 if (flag==1): 
                     update1 = '''update submission set nilai = 0, status = 1 where id = '''+str(sub_id)
@@ -239,7 +292,7 @@ except :
     public function oracleSql($db_id,$ip,$db_name,$conn_username,$conn_password)
     {
         $temp_file = "grader_".$db_id.".py";
-        $file = fopen("../grader/grader_".$db_id.".py", "wb") or die("Unable to open file!");
+        $file = fopen("grader/grader_".$db_id.".py", "wb") or die("Unable to open file!");
         $content = "#!/usr/bin/python\
 import MySQLdb
 import cx_Oracle
@@ -290,36 +343,36 @@ try:
                         hasil[rows][column] = res[column]
                     rows+=1
         
-                    kunci = '''select jawaban from question where id='''+ str(ques_id)
-                    cursor.execute(kunci)
+                kunci = '''select jawaban from question where id='''+ str(ques_id)
+                cursor.execute(kunci)
+                temp = cursor.fetchone()
+                while temp is not None:
+                    temp_kunci = temp[0]
+                    temp_kunci = temp_kunci.replace(';', '')
                     temp = cursor.fetchone()
-                    while temp is not None:
-                        temp_kunci = temp[0]
-                        temp_kunci = temp_kunci.replace(';', '')
-                        temp = cursor.fetchone()
-                    cursor_kunci.execute(temp_kunci)
-                    res_kunci = cursor_kunci.fetchall()
-                    num_fields_1 = len(cursor_kunci.description)
-                    arr_kunci=[[0 for x in range(num_fields_1)] for x in range(10000)]
-                    row_kunci=0
-                    for res_key in res_kunci:
-                        for column_kunci in range(num_fields_1):
-                            arr_kunci[row_kunci][column_kunci] = res_key[column_kunci]
-                        row_kunci+=1
-                    flag=0
-                    if (num_fields != num_fields_1): 
-                       flag=1
-                       
-                    if (rows != row_kunci): 
-                       flag=1 
-        
-                    if (flag==0):
-                        for row_compare in range(row_kunci):
-                            for column_compare in range(num_fields):
-                                if (hasil[row_compare][column_compare]!=arr_kunci[row_compare][column_compare]):
-                                    #print hasil[row_compare][column_compare]
-                                    #print arr_kunci[row_compare][column_compare]
-                                    flag=1
+                cursor_kunci.execute(temp_kunci)
+                res_kunci = cursor_kunci.fetchall()
+                num_fields_1 = len(cursor_kunci.description)
+                arr_kunci=[[0 for x in range(num_fields_1)] for x in range(10000)]
+                row_kunci=0
+                for res_key in res_kunci:
+                    for column_kunci in range(num_fields_1):
+                        arr_kunci[row_kunci][column_kunci] = res_key[column_kunci]
+                    row_kunci+=1
+                flag=0
+                if (num_fields != num_fields_1): 
+                   flag=1
+                   
+                if (rows != row_kunci): 
+                   flag=1 
+    
+                if (flag==0):
+                    for row_compare in range(row_kunci):
+                        for column_compare in range(num_fields):
+                            if (hasil[row_compare][column_compare]!=arr_kunci[row_compare][column_compare]):
+                                #print hasil[row_compare][column_compare]
+                                #print arr_kunci[row_compare][column_compare]
+                                flag=1
                         
                 if (flag==1): 
                     update1 = '''update submission set nilai = 0, status = 1 where id = '''+str(sub_id)
@@ -355,4 +408,5 @@ except :
         fclose($file);
         return;
     }
+}*/
 }

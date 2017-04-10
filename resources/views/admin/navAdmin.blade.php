@@ -88,15 +88,17 @@ $(document).ready(function() {
   ;
   </script>
 
-<div class="ui fixed menu" style="box-shadow: 0px 3px 3px 0 rgba(187,16,21,1);">
+<div class="ui fixed menu" style="box-shadow: 0px 3px 3px 0 rgba(0,120,127,1);">
  <div class="ui container">
-    <div class="header item">
-      <img class ="logo" src="{{URL::to('assets/image/horizontal.png')}}" style="50%"> <a href="{{url('/')}}"></a>
-    </div>
-    <a class="item" href="{{url('/')}}">Home</a>
+    <a href="{{url('/')}}">
+      <div class="header item">
+        <img class ="logo" src="{{URL::to('assets/image/icon_baru.png')}}" style="50%"> 
+      </div>
+    </a>
     <a class="item" href="{{url('accounts')}}">Accounts</a>
-    <a class="item" href="{{url('databases')}}">Database List</a>
+    <a class="item" href="{{url('databases')}}">DB List</a>
     <a class="item" href="{{url('events')}}">Events</a>
+    <a class="item" href="{{url('tutorial')}}">Tutorial</a>
     <a class="item" href="{{url('submissions')}}">Submissions</a>
     <a class="item" href="{{url('scoreboards')}}">Scoreboards</a>
     <div class="right menu">

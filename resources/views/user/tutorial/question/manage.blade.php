@@ -99,7 +99,8 @@
 								   {{$eve->judul}}
 								</h1><br>
 			          				<p style="font-size:20px;"><?php echo nl2br($eve->konten) ?></p>
-			          				<br><br>
+			          				<h3>PDM :</h3>
+			          				<img src="{{url('public/pdm_db/')}}/{{$eve->listdb->pdm}}" style="width:100%">
 			          			</div>
 
 			          		</div>
@@ -142,7 +143,6 @@
 							            	</div><!-- /.col -->
 							          	</div>
 							          	<br>
-							          	
 							          	<input type="hidden" name="jumlah" value="{{$i}}">
 							        </form>
 				          		</div>
@@ -226,14 +226,14 @@
 							           .replace(/  /g, ' &nbsp;')
 							           .replace(/\r\n|\n|\r/g, '<br />');
 						    //str = str.replace(/(?:\r\n|\r|\n)/g, '<br />');
-  							document.getElementById('error{{$sum}}').innerHTML = '<i class="large check circle outline icon"></i><b>CORRECT</b><br><br>'+(str);
+  							document.getElementById('error{{$sum}}').innerHTML = '<i class="large check circle outline icon"></i><b>CORRECT SYNTAX</b><br><br>'+(str);
   							document.getElementById('error{{$sum}}').className = 'ui green inverted segment';
   							document.getElementById('submit{{$sum}}').disabled = false;
   							//console.log(html);
 						}
 						catch(err) {
 							document.getElementById('error{{$sum}}').innerHTML= "";
-							document.getElementById('error{{$sum}}').innerHTML= '<i class="large remove circle outline icon"></i><b>ERROR</b><br><br>'+err;
+							document.getElementById('error{{$sum}}').innerHTML= '<i class="large remove circle outline icon"></i><b>ERROR SYNTAX</b><br><br>'+err;
 							document.getElementById('error{{$sum}}').className = 'ui red inverted segment';
 							document.getElementById('submit{{$sum}}').disabled = true;
 						    //console.log(err);

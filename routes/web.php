@@ -63,13 +63,14 @@ Route::group(['middleware' => 'auth'], function()
 		Route::post('submissions', 'EventController@viewSubmissions');
 		Route::get('submissions/{id}', 'EventController@viewSubmissionsSubmit');
 
-		/*EVENT*/
+		/*DATABASE*/
 		Route::get('databases','DatabaseController@index');
 		Route::get('databases/add','DatabaseController@create');
 		Route::post('databases/add','DatabaseController@create');
 		Route::get('databases/edit/{id}','DatabaseController@update');
 		Route::post('databases/edit/{id}','DatabaseController@update');
 		Route::get('databases/remove/{id}','DatabaseController@destroy');
+		Route::get('databases/field/{id}','DatabaseController@getField');
 
 		/*PARSER*/
 		Route::get('event/parser/start/{id}', 'EventController@parserStart');
@@ -102,6 +103,13 @@ Route::group(['middleware' => 'auth'], function()
 			/*SUBMISSION*/
 			Route::post('tutorial/submissions', 'EventTutorialController@viewSubmissions');
 			Route::get('tutorial/submissions/{id}', 'EventTutorialController@viewSubmissionsTutorialSubmit');
+
+		/*DBVERSION*/
+		Route::get('databases/version','DBVersionController@index');
+		Route::get('databases/version/add','DBVersionController@create');
+		Route::post('databases/version/add','DBVersionController@create');
+		Route::get('databases/version/edit/{id}','DBVersionController@update');
+		Route::post('databases/version/edit/{id}','DBVersionController@update');
 
 
 

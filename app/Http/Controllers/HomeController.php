@@ -71,7 +71,7 @@ class HomeController extends Controller {
                     exec("Wmic process where (Name like '%python%') get commandline, ProcessId 2>&1",$output);
                     if($output[0] == "No Instance(s) Available.")
                     {
-                        ListDB::whereNotNull('ip')->update(array(
+                        ListDB::whereNotNull('pdm')->update(array(
                             'status' => '0'
                         ));
                     }
@@ -91,7 +91,7 @@ class HomeController extends Controller {
                             if (strpos($status[2], 'grader')!== false)
                             { 
                                 $split = explode("-", $temp_cmd);
-                                $pid = $split[6];
+                                $pid = $split[sizeof($split)-2];
                                 $command = $split[1];
                                 $grader_id = $split[2];
                                 $check = ListDB::find($grader_id);

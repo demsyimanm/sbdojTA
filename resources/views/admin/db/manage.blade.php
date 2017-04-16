@@ -16,6 +16,10 @@
 		<i class="plus icon"></i>
 		Tambah Database
 	  </a>
+	  <a class="ui icon orange button" href="{{url('databases/version')}}">
+		<i class="plus icon"></i>
+		Tambah Versi Database
+	  </a>
   </div>
   <div style="padding:0%;padding-top:0px">
 	  <div class="ui blue segment" style="height:80%">
@@ -23,14 +27,11 @@
 		  <thead>
 		    <tr>
 		        <th width="5%" style="text-align:center">No</th>
-		        <th width="10%" style="text-align:center">DB Name</th>
-		        <th width="10%" style="text-align:center">Versi</th>
-		        <th width="12.5%" style="text-align:center">IP</th>
-	        	<th width="12.5%" style="text-align:center">Connection Userame</th>
-	        	<th width="12.5%" style="text-align:center">Connection Password</th>
-	        	<th width="12.5%" style="text-align:center">Grader</th>
-	        	<th width="12.5%" style="text-align:center">Grader Tutorial</th>
-	        	<th width="10%" style="text-align:center">Action</th>
+		        <th width="15%" style="text-align:center">Versi</th>
+		        <th width="30%" style="text-align:center">Parameters</th>
+	        	<th width="17.5%" style="text-align:center">Grader</th>
+	        	<th width="17.5%" style="text-align:center">Grader Tutorial</th>
+	        	<th width="15%" style="text-align:center">Action</th>
 	      	</tr>
 	      </thead>
 		  <tbody>
@@ -38,11 +39,14 @@
 		  	@foreach ($dbs as $db)
 			    <tr>
 			      	<td class="center"><?php echo $i++ ?></td>
-		      		<td>{{ $db->db_name }}</td>
 		      		<td>{{ $db->dbversion->nama }}</td>
-		      		<td class="text-center">{{ $db->ip }}</td>
-		      		<td>{{ $db->db_username }}</td>
-	      			<td>{{ $db->db_password }}</td>
+		      		<td>
+		      			<ul>
+			      			@foreach($db->listdbparameter as $parameter)
+			      				<li>{{$parameter->dbversionparameter->parameter}} : {{$parameter->content}}</li>
+			      			@endforeach
+		      			</ul>
+		      		</td>
 			      	<td>
 			      		<center>
 			      			@if($db->status == '0')

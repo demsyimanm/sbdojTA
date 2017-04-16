@@ -11,6 +11,9 @@ use App\Question;
 use App\ListDB;
 use DateTime;
 use App\DBversion;
+use App\DBversionParameter;
+use App\ListDBParameter;
+use Validator;
 
 class DatabaseController extends Controller
 {
@@ -19,7 +22,7 @@ class DatabaseController extends Controller
             exec("Wmic process where (Name like '%python%') get commandline, ProcessId 2>&1",$output);
             if($output[0] == "No Instance(s) Available.")
             {
-                ListDB::whereNotNull('ip')->update(array(
+                ListDB::whereNotNull('pdm')->update(array(
                     'status' => '0',
                     'gradertutorial_status' => '0'
                 ));
@@ -40,7 +43,7 @@ class DatabaseController extends Controller
                     if (strpos($status[2], 'grader')!== false)
                     { 
                         $split = explode("-", $temp_cmd);
-                        $pid = $split[6];
+                        $pid = $split[sizeof($split)-2];
                         $command = $split[1];
                         $grader_id = $split[2];
                         $check = ListDB::find($grader_id);
@@ -69,7 +72,7 @@ class DatabaseController extends Controller
                     'gradertutorial_status' => '0'
                 ));
             }
-			$dbs = ListDB::get();
+			$dbs = ListDB::with('listdbparameter')->get();
 			return view('admin.db.manage',compact('dbs'));
 		}
 		else{
@@ -88,26 +91,43 @@ class DatabaseController extends Controller
 			} 
 			else if (Request::isMethod('post')) {
 				$data = Input::all();
-				ListDB::create(array(
-					'ip' 			               => $data['ip'], 
-					'db_username' 	                => $data['conn_username'],
-					'db_password' 	                => $data['conn_password'],
-					'db_name' 		                => $data['db_name'],
+                $fileName   = '';
+                if(Input::hasFile('pdm')){
+                    $file=Input::file('pdm');
+                    $extension = $file->getClientOriginalExtension();
+                    if($extension != 'jpeg' && $extension != 'JPEG'&& $extension != 'jpg' && $extension != 'JPG' && $extension != 'png' && $extension != 'PNG')
+                    {
+                        return redirect('databases/add')->withInput()->withErrors("Gambar PDM Harus berupa file .JPG, .PNG atau .JPEG");
+                    }
+                    $latest = ListDB::orderBy('id','desc')->first();
+                    $latest = $latest->id + 1;
+                    $name= $latest.'_pdm';
+                    $fileName = $name . '.' . $extension;
+                    $file->move(public_path().'/pdm_db',$fileName);
+                }
+                else
+                {
+                    return redirect('databases/add')->withInput()->withErrors("Gambar PDM Harus diisi");
+                }
+				$db_id = ListDB::insertGetId(array(
                     'dbversion_id'                  => $data['dbversion'],
+                    'pdm'                           => $fileName,
 					'status'		                => 0,
                     'gradertutorial_status'         => 0
 				));
-                if($data['dbversion'] == 1)
-                {    
-                    //$this->oracleSql($db_id,$data['ip'],$data['db_name'],$data['conn_username'],$data['conn_password']);
-                    return redirect('databases');
+                $dbversion = $data['dbversion'];
+                array_forget($data,'dbversion');
+                array_forget($data,'_token');
+                array_forget($data,'pdm');
+                foreach ($data as $key => $value) {
+                    ListDBParameter::create(array(
+                        'listdb_id'             => $db_id,
+                        'dbversion_id'          => $dbversion,
+                        'dbversionparameter_id' => $key,
+                        'content'               => $value
+                    ));
                 }
-                else if ($data['dbversion'] == 2)
-                {
-                    //$this->mySql($db_id,$data['ip'],$data['db_name'],$data['conn_username'],$data['conn_password']);
-                    return redirect('databases');
-                }
-				
+                return redirect('databases');
 			}
 		} 
 		else {
@@ -119,30 +139,41 @@ class DatabaseController extends Controller
 		if(Auth::user()->role->id == 1 || Auth::user()->role->id == 2) { 
 			$this->data['user'] = Auth::user()->role->id;
 			$this->data['kelas'] = Auth::user()->kelas;
-			$this->data['db'] = ListDB::find($id);
+			$this->data['db'] = ListDB::with('listdbparameter')->find($id);
 			if (Request::isMethod('get')) {
-                $this->data['versions'] = DBversion::get();
+                //dd($this->data['db']);
+                //$this->data['versions'] = DBversion::get();
 				return View::make('admin.db.update',$this->data);
 			} 
 			else if (Request::isMethod('post')) {
 				$data = Input::all();
-				ListDB::where('id',$id)->update(array(
-					'ip' 			=> $data['ip'], 
-					'db_username' 	=> $data['conn_username'],
-					'db_password' 	=> $data['conn_password'],
-					'db_name' 		=> $data['db_name'],
-                    'dbversion_id'  => $data['dbversion'],
-				));
-                if($data['dbversion'] == 1)
-                {    
-                    //$this->oracleSql($id,$data['ip'],$data['db_name'],$data['conn_username'],$data['conn_password']);
-                    return redirect('databases');
+                //dd($data);
+                $fileName   = '';
+                if(Input::hasFile('pdm')){
+                    $file=Input::file('pdm');
+                    $extension = $file->getClientOriginalExtension();
+                    if($extension != 'jpeg' && $extension != 'JPEG'&& $extension != 'jpg' && $extension != 'JPG' && $extension != 'png' && $extension != 'PNG')
+                    {
+                        return redirect('databases/edit/'.$id)->withInput()->withErrors("Gambar PDM Harus berupa file .JPG, .PNG atau .JPEG");
+                    }
+                    $name= $id.'_pdm';
+                    $fileName = $name . '.' . $extension;
+                    $file->move(public_path().'/pdm_db',$fileName);
+                    ListDB::where('id',$id)->update(array(
+                        'pdm'  => $fileName,
+                    ));
                 }
-                else if ($data['dbversion'] == 2)
-                {
-                    //$this->mySql($id,$data['ip'],$data['db_name'],$data['conn_username'],$data['conn_password']);
-                    return redirect('databases');
+                $dbversion = $data['dbversion'];
+                array_forget($data,'dbversion');
+                array_forget($data,'dbversion_name');
+                array_forget($data,'_token');
+                array_forget($data,'pdm');
+                foreach ($data as $key => $value) {
+                    ListDBParameter::where('listdb_id',$id)->where('dbversion_id',$dbversion)->where('dbversionparameter_id',$key)->update(array(
+                        'content'               => $value
+                    ));
                 }
+                return redirect('databases');
 			}
 		} 
 		else {
@@ -160,6 +191,7 @@ class DatabaseController extends Controller
 				}
 				//dd($events);
 				ListDB::where('id',$id)->delete();
+                ListDBParameter::where('listdb_id',$id)->delete();
 				Event::where('listdb_id', $id)->delete();
 				Question::whereIn('event_id', $events)->delete();
 				return redirect('databases');
@@ -168,6 +200,14 @@ class DatabaseController extends Controller
 			return redirect('/');
 		}
 	}
+
+    public function getField($id)
+    {
+        if(Auth::user()->role->id == 1 || Auth::user()->role->id == 2){
+            $fields = DBversionParameter::where('dbversion_id',$id)->get();
+            return $fields;
+        } 
+    }
 
     /*public function mySql($db_id,$ip,$db_name,$conn_username,$conn_password)
     {

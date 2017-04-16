@@ -69,68 +69,59 @@
   <div class="ui grid stackable" style="margin-bottom:10%;">
     <div  class="sixteen wide column">
       <div class="ui blue segment" style="padding-bottom:5%">
-        <form class="ui form" action="" method="post"  ng-app="testApp" ng-strict-di>
+        <form class="ui form" action="" method="post"  ng-app="testApp" ng-strict-di enctype="multipart/form-data">
           <div visible>
             <div id="form1" >
+               @if($errors->any())
+                  <div class="ui red inverted segment">
+                    <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                    </ul>
+                  </div>
+              @endif
               <div class="sixteen wide field">
                 <div class="inline fields">
                   <div class="three wide field">
                     <label>Versi Database</label>
                   </div>
                   <div class="thirteen wide field">
-                    <select type="text" name="dbversion" placeholder="Versi Database">
-                      @foreach($versions as $version)
-                        @if($version->id == $db->dbversion_id)
-                          <option value="{{$version->id}}" selected="">{{$version->nama}}</option>
-                        @else
-                          <option value="{{$version->id}}">{{$version->nama}}</option>
-                        @endif
-                      @endforeach
-                    </select> 
+                        <input value="{{$db->dbversion->nama}}" name="dbversion_name" readonly="">
+                        <input type="hidden" value="{{$db->dbversion->id}}" name="dbversion" readonly="">
                   </div>
                 </div>
               </div>
+              @foreach($db->listdbparameter as $parameter)
+                <div class="sixteen wide field">
+                  <div class="inline fields">
+                    <div class="three wide field">
+                      <label>{{$parameter->dbversionparameter->parameter}}</label>
+                    </div>
+                    <div class="thirteen wide field">
+                      <input type="text" name="{{$parameter->dbversionparameter->id}}" placeholder="{{$parameter->dbversionparameter->parameter}}" value="{{$parameter->content}}">
+                    </div>
+                  </div>
+                </div>
+              @endforeach
               <div class="sixteen wide field">
                 <div class="inline fields">
                   <div class="three wide field">
-                    <label>Nama Database</label>
+                    <label>PDM</label>
                   </div>
                   <div class="thirteen wide field">
-                    <input type="text" name="db_name" placeholder="Nama Database" value="{{$db->db_name}}">
+                    <input type="file" name="pdm" placeholder="PDM">
                   </div>
                 </div>
-              </div>
-              <div class="sixteen wide field">
                 <div class="inline fields">
                   <div class="three wide field">
-                    <label>Database IP</label>
+                    <label>Current PDM</label>
                   </div>
                   <div class="thirteen wide field">
-                    <input type="text" name="ip" placeholder="Database IP" value="{{$db->ip}}">
+                    <img src="{{url('public/pdm_db/')}}/{{$db->pdm}}" style="width:60%">
                   </div>
                 </div>
               </div>
-              <div class="sixteen wide field">
-                <div class="inline fields">
-                  <div class="three wide field">
-                    <label>Connection Username</label>
-                  </div>
-                  <div class="thirteen wide field">
-                    <input type="text" name="conn_username" placeholder="Connection Username" value="{{$db->db_username}}">
-                  </div>
-                </div>
-              </div>
-              <div class="sixteen wide field">
-                <div class="inline fields">
-                  <div class="three wide field">
-                    <label>Connection Password</label>
-                  </div>
-                  <div class="thirteen wide field">
-                    <input type="text" name="conn_password" placeholder="Connection Password" value="{{$db->db_password}}">
-                  </div>
-                </div>
-              </div>
-              
               {{csrf_field()}}
               <div class="ui error message"></div>
               <button class="ui icon green button" type="submit">

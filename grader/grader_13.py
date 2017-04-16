@@ -7,7 +7,8 @@ import sys
 import os
 import signal
 
-db_kunci = cx_Oracle.connect(user='siakad', password='pusing3003', dsn='10.151.34.248:1521/xe')
+db_kunci = MySQLdb.connect(host='localhost', user='root', db='sbd', passwd='')
+print db_kunci
 cursor_kunci = db_kunci.cursor()
 tempPid = 0
 

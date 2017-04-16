@@ -20,7 +20,8 @@ class ListDB extends Model
 		'db_password',
 		'db_name',
 		'status',
-		'dbversion_id'
+		'dbversion_id',
+		'pdm'
 	);
 
 	protected $SoftDelete = true;
@@ -39,5 +40,10 @@ class ListDB extends Model
 	public function dbversion()
 	{
 		return $this->belongsTo('App\DBVersion');
+	}
+
+	public function listdbparameter()
+	{
+		return $this->hasMany('App\ListDBParameter','listdb_id','id');
 	}
 }

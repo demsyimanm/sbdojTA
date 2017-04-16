@@ -69,17 +69,14 @@ class EventController extends Controller {
 	}
 
 	public function parserStart($id){
-		$db = ListDB::find($id);
-		if($db->dbversion_id==1)
+		$db = ListDB::with('listdbparameter')->find($id);
+		$cmd = "python C://xampp/htdocs/sbdoj/grader/grader.py ".$id." ".$db->dbversion_id." ".$db->dbversion->import." ";
+		foreach($db->listdbparameter as $parameter) 
 		{
-			$cmd = "python C://xampp/htdocs/sbdoj/grader/grader_oracle.py ".$id." ".$db->db_username." ".$db->db_password." ".$db->ip;
-			//dd($cmd);
+			if($parameter->content == "") $parameter->content = "''";
+			$cmd .= $parameter->dbversionparameter->parameter." ".$parameter->content." ";
 		}
-		else if($db->dbversion_id==2)
-		{
-			$cmd = "python C://xampp/htdocs/sbdoj/grader/grader_mysql.py ".$id." ".$db->db_username." ".$db->db_password." ".$db->ip." ".$db->db_name;
-			//dd($cmd);
-		}
+		
 		if($process = popen("start /B ".$cmd, "r"))
 		{
 			ListDB::where('id', $id)->update(array(
@@ -115,7 +112,7 @@ class EventController extends Controller {
                 if (strpos($status[2], 'grader')!== false)
                 { 
                 	$split = explode("-", $temp_cmd);
-                    $pid = $split[6];
+                    $pid = $split[sizeof($split)-2];
                     $command = $split[1];
                     $grader_id = $split[2];
                     $check = ListDB::find($grader_id);
